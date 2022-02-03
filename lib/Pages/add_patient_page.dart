@@ -28,7 +28,22 @@ class _AddPatientPageState extends State<AddPatientPage> {
   var registrationIdTextField = TextEditingController();
   var heightTextField = TextEditingController();
   var weightTextField = TextEditingController();
-  String? sexDropDown;
+  String? sexPatientDropDown;
+  String? sexDonorDropDown;
+  String? bloodGroupPatientDropDown;
+  String? bloodGroupDonorDropDown;
+  String? hlaPatient1DropDown;
+  String? hlaPatient2DropDown;
+  String? hlaPatient3DropDown;
+  String? hlaPatient4DropDown;
+  String? hlaPatient5DropDown;
+  String? hlaPatient6DropDown;
+  String? hlaDonor1DropDown;
+  String? hlaDonor2DropDown;
+  String? hlaDonor3DropDown;
+  String? hlaDonor4DropDown;
+  String? hlaDonor5DropDown;
+  String? hlaDonor6DropDown;
   String? casteDropDown;
   final IndNumberTextInputFormatter _phoneNumberFormatter =
       IndNumberTextInputFormatter();
@@ -51,7 +66,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
       // Start validating on every change.
     } else {
       form.save();
-      clientData.sex = sexDropDown;
+      clientData.sex = sexPatientDropDown;
       clientData.caste = casteDropDown;
       // try{
       // if(clientData.startDate==null)clientData.startDate=today;
@@ -107,98 +122,15 @@ class _AddPatientPageState extends State<AddPatientPage> {
                 }
               },
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(
                     height: 8,
                   ),
-                  Row(children: [
-                    CircleAvatar(
-                      radius: 25,
-                      child: Image.asset(
-                        'assets/registrationId.png',
-                        height: 30,
-                      ),
-                      backgroundColor: Colors.transparent,
-                    ),
-                    Expanded(
-                      child: TextFormField(
-                        textCapitalization: TextCapitalization.words,
-                        controller: registrationIdTextField,
-                        textInputAction: TextInputAction.next,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText:
-                              "Registration Id(Auto generated if left empty)",
-                          contentPadding: EdgeInsets.only(
-                              bottom: 10.0, left: 10.0, right: 10.0),
-                        ),
-                        onSaved: (value) {
-                          clientData.registrationId = value;
-                        },
-                      ),
-                    ),
-                  ]),
-                  const SizedBox(
-                    height: 8,
+                  const Padding(
+                    padding: EdgeInsets.only(left: 5),
+                    child: Text("Patient Details:"),
                   ),
-                  Row(children: [
-                    CircleAvatar(
-                      radius: 25,
-                      child: Image.asset(
-                        'assets/payment.png',
-                        height: 30,
-                      ),
-                      backgroundColor: Colors.transparent,
-                    ),
-                    Expanded(
-                      child: TextFormField(
-                        controller: paymentNumberTextField,
-                        textInputAction: TextInputAction.next,
-                        autovalidateMode: AutovalidateMode.always,
-                        style: const TextStyle(),
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: "No of Payments(in months)",
-                          contentPadding:
-                              EdgeInsets.only(left: 10.0, right: 10.0),
-                        ),
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "required fields can't be left empty";
-                          } else if (value == "0") {
-                            return "No of Payments cant be 0!!";
-                          } else {
-                            try {
-                              int months = int.parse(value);
-                              if (months < 0) {
-                                return "No of Payments cant be Negative!!";
-                              } else {
-                                return null;
-                              }
-                            } catch (E) {
-                              return "Non numeric input not allowed.";
-                            }
-                          }
-                        },
-                        onSaved: (value) {
-                          try {
-                            int months = int.parse(value!);
-                            months = months.abs();
-                            clientData.due = (months - 1) * -1;
-                            clientData.startDate ??= today;
-                            clientData.endDate = DateTime(
-                                clientData.startDate!.year,
-                                clientData.startDate!.month + months,
-                                clientData.startDate!.day);
-                          } catch (E) {
-                            globalShowInSnackBar(scaffoldMessengerKey,
-                                "Non numeric input not allowed.");
-                          }
-                        },
-                      ),
-                    ),
-                  ]),
                   const SizedBox(
                     height: 8,
                   ),
@@ -237,29 +169,233 @@ class _AddPatientPageState extends State<AddPatientPage> {
                     CircleAvatar(
                       radius: 25,
                       child: Image.asset(
-                        'assets/dad.png',
+                        'assets/sex.png',
                         height: 30,
                       ),
                       backgroundColor: Colors.transparent,
                     ),
                     Expanded(
-                      child: TextFormField(
-                        textCapitalization: TextCapitalization.words,
-                        controller: fathersNameTextField,
-                        textInputAction: TextInputAction.next,
-                        style: const TextStyle(),
+                      child: DropdownButtonFormField(
+                        value: bloodGroupPatientDropDown,
+                        icon: const Icon(Icons.arrow_downward),
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: "Father's Name",
+                          labelText: "Blood Group:",
                           contentPadding: EdgeInsets.only(
                               bottom: 10.0, left: 10.0, right: 10.0),
+                          border: OutlineInputBorder(),
                         ),
-                        onSaved: (value) {
-                          clientData.fathersName = value;
+                        items: <String>[
+                          'A+',
+                          'B+',
+                          'AB+',
+                          'O+',
+                          'A-',
+                          'B-',
+                          'AB-',
+                          'O-'
+                        ].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            bloodGroupPatientDropDown = newValue;
+                          });
                         },
                       ),
                     ),
                   ]),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CircleAvatar(
+                          radius: 25,
+                          child: Image.asset(
+                            'assets/sex.png',
+                            height: 30,
+                          ),
+                          backgroundColor: Colors.transparent,
+                        ),
+                        const Text('HLA1:'),
+                        DropdownButton(
+                          value: hlaPatient1DropDown,
+                          icon: const Icon(Icons.arrow_downward),
+                          items: <String>[
+                            'A+',
+                            'B+',
+                            'AB+',
+                            'O+',
+                            'A-',
+                            'B-',
+                            'AB-',
+                            'O-'
+                          ].map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              hlaPatient1DropDown = newValue;
+                            });
+                          },
+                        ),
+                        const Text('HLA2:'),
+                        DropdownButton(
+                          value: hlaPatient2DropDown,
+                          icon: const Icon(Icons.arrow_downward),
+                          items: <String>[
+                            'A+',
+                            'B+',
+                            'AB+',
+                            'O+',
+                            'A-',
+                            'B-',
+                            'AB-',
+                            'O-'
+                          ].map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              hlaPatient2DropDown = newValue;
+                            });
+                          },
+                        )
+                      ]),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CircleAvatar(
+                          radius: 25,
+                          child: Image.asset(
+                            'assets/sex.png',
+                            height: 30,
+                          ),
+                          backgroundColor: Colors.transparent,
+                        ),
+                        const Text('HLA3:'),
+                        DropdownButton(
+                          value: hlaPatient3DropDown,
+                          icon: const Icon(Icons.arrow_downward),
+                          items: <String>[
+                            'A+',
+                            'B+',
+                            'AB+',
+                            'O+',
+                            'A-',
+                            'B-',
+                            'AB-',
+                            'O-'
+                          ].map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              hlaPatient3DropDown = newValue;
+                            });
+                          },
+                        ),
+                        const Text('HLA4:'),
+                        DropdownButton(
+                          value: hlaPatient4DropDown,
+                          icon: const Icon(Icons.arrow_downward),
+                          items: <String>[
+                            'A+',
+                            'B+',
+                            'AB+',
+                            'O+',
+                            'A-',
+                            'B-',
+                            'AB-',
+                            'O-'
+                          ].map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              hlaPatient4DropDown = newValue;
+                            });
+                          },
+                        )
+                      ]),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CircleAvatar(
+                          radius: 25,
+                          child: Image.asset(
+                            'assets/sex.png',
+                            height: 30,
+                          ),
+                          backgroundColor: Colors.transparent,
+                        ),
+                        const Text('HLA5:'),
+                        DropdownButton(
+                          value: hlaPatient5DropDown,
+                          icon: const Icon(Icons.arrow_downward),
+                          items: <String>[
+                            'A+',
+                            'B+',
+                            'AB+',
+                            'O+',
+                            'A-',
+                            'B-',
+                            'AB-',
+                            'O-'
+                          ].map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              hlaPatient5DropDown = newValue;
+                            });
+                          },
+                        ),
+                        const Text('HLA6:'),
+                        DropdownButton(
+                          value: hlaPatient6DropDown,
+                          icon: const Icon(Icons.arrow_downward),
+                          items: <String>[
+                            'A+',
+                            'B+',
+                            'AB+',
+                            'O+',
+                            'A-',
+                            'B-',
+                            'AB-',
+                            'O-'
+                          ].map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              hlaPatient6DropDown = newValue;
+                            });
+                          },
+                        ),
+                      ]),
                   const SizedBox(
                     height: 8,
                   ),
@@ -296,24 +432,58 @@ class _AddPatientPageState extends State<AddPatientPage> {
                     CircleAvatar(
                       radius: 25,
                       child: Image.asset(
-                        'assets/doj.png',
+                        'assets/height.png',
                         height: 30,
                       ),
                       backgroundColor: Colors.transparent,
                     ),
                     Expanded(
-                      child: DateTimeFormField(
+                      child: TextFormField(
+                        controller: heightTextField,
+                        keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.next,
+                        style: const TextStyle(),
                         decoration: const InputDecoration(
-                            hintStyle: TextStyle(),
-                            errorStyle: TextStyle(),
-                            border: OutlineInputBorder(),
-                            suffixIcon: Icon(Icons.event_note),
-                            labelText: 'DOJ',
-                            hintText: 'Date of Joining'),
-                        mode: DateTimeFieldPickerMode.date,
-                        autovalidateMode: AutovalidateMode.always,
-                        onDateSelected: (DateTime value) {
-                          clientData.joiningDate = value;
+                          border: OutlineInputBorder(),
+                          labelText: "Kidney Size(cm)",
+                          contentPadding: EdgeInsets.only(
+                              bottom: 10.0, left: 10.0, right: 10.0),
+                        ),
+                        onSaved: (value) {
+                          if (value!.isNotEmpty) {
+                            clientData.height = double.parse(value);
+                          }
+                        },
+                      ),
+                    ),
+                  ]),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Row(children: [
+                    CircleAvatar(
+                      radius: 25,
+                      child: Image.asset(
+                        'assets/address.png',
+                        height: 30,
+                      ),
+                      backgroundColor: Colors.transparent,
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        textCapitalization: TextCapitalization.words,
+                        controller: addressTextField,
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.multiline,
+                        style: const TextStyle(),
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: "Address",
+                          contentPadding: EdgeInsets.only(
+                              bottom: 10.0, left: 10.0, right: 10.0),
+                        ),
+                        onSaved: (value) {
+                          clientData.address = value;
                         },
                       ),
                     ),
@@ -361,6 +531,380 @@ class _AddPatientPageState extends State<AddPatientPage> {
                     CircleAvatar(
                       radius: 25,
                       child: Image.asset(
+                        'assets/sex.png',
+                        height: 30,
+                      ),
+                      backgroundColor: Colors.transparent,
+                    ),
+                    Expanded(
+                      child: DropdownButtonFormField(
+                        value: sexPatientDropDown,
+                        icon: const Icon(Icons.arrow_downward),
+                        decoration: const InputDecoration(
+                          labelText: "Gender:",
+                          contentPadding: EdgeInsets.only(
+                              bottom: 10.0, left: 10.0, right: 10.0),
+                          border: OutlineInputBorder(),
+                        ),
+                        items: <String>[
+                          'Male',
+                          'Female',
+                          'Trans',
+                          'Prefer not to say'
+                        ].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            sexPatientDropDown = newValue;
+                          });
+                        },
+                      ),
+                    ),
+                  ]),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 5),
+                    child: Text("Donors Details:"),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Row(children: [
+                    CircleAvatar(
+                      radius: 25,
+                      child: Image.asset(
+                        'assets/name.png',
+                        height: 30,
+                      ),
+                      backgroundColor: Colors.transparent,
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        textCapitalization: TextCapitalization.words,
+                        controller: nameTextField,
+                        textInputAction: TextInputAction.next,
+                        style: const TextStyle(),
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: "Name",
+                          contentPadding: EdgeInsets.only(
+                              bottom: 10.0, left: 10.0, right: 10.0),
+                        ),
+                        validator: _validateName,
+                        onSaved: (value) {
+                          clientData.name = value;
+                        },
+                      ),
+                    ),
+                  ]),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Row(children: [
+                    CircleAvatar(
+                      radius: 25,
+                      child: Image.asset(
+                        'assets/sex.png',
+                        height: 30,
+                      ),
+                      backgroundColor: Colors.transparent,
+                    ),
+                    Expanded(
+                      child: DropdownButtonFormField(
+                        value: bloodGroupDonorDropDown,
+                        icon: const Icon(Icons.arrow_downward),
+                        decoration: const InputDecoration(
+                          labelText: "Blood Group:",
+                          contentPadding: EdgeInsets.only(
+                              bottom: 10.0, left: 10.0, right: 10.0),
+                          border: OutlineInputBorder(),
+                        ),
+                        items: <String>[
+                          'A+',
+                          'B+',
+                          'AB+',
+                          'O+',
+                          'A-',
+                          'B-',
+                          'AB-',
+                          'O-'
+                        ].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            bloodGroupDonorDropDown = newValue;
+                          });
+                        },
+                      ),
+                    ),
+                  ]),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CircleAvatar(
+                          radius: 25,
+                          child: Image.asset(
+                            'assets/sex.png',
+                            height: 30,
+                          ),
+                          backgroundColor: Colors.transparent,
+                        ),
+                        const Text('HLA1:'),
+                        DropdownButton(
+                          value: hlaDonor1DropDown,
+                          icon: const Icon(Icons.arrow_downward),
+                          items: <String>[
+                            'A+',
+                            'B+',
+                            'AB+',
+                            'O+',
+                            'A-',
+                            'B-',
+                            'AB-',
+                            'O-'
+                          ].map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              hlaDonor1DropDown = newValue;
+                            });
+                          },
+                        ),
+                        const Text('HLA2:'),
+                        DropdownButton(
+                          value: hlaDonor2DropDown,
+                          icon: const Icon(Icons.arrow_downward),
+                          items: <String>[
+                            'A+',
+                            'B+',
+                            'AB+',
+                            'O+',
+                            'A-',
+                            'B-',
+                            'AB-',
+                            'O-'
+                          ].map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              hlaDonor2DropDown = newValue;
+                            });
+                          },
+                        )
+                      ]),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CircleAvatar(
+                          radius: 25,
+                          child: Image.asset(
+                            'assets/sex.png',
+                            height: 30,
+                          ),
+                          backgroundColor: Colors.transparent,
+                        ),
+                        const Text('HLA3:'),
+                        DropdownButton(
+                          value: hlaDonor3DropDown,
+                          icon: const Icon(Icons.arrow_downward),
+                          items: <String>[
+                            'A+',
+                            'B+',
+                            'AB+',
+                            'O+',
+                            'A-',
+                            'B-',
+                            'AB-',
+                            'O-'
+                          ].map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              hlaDonor3DropDown = newValue;
+                            });
+                          },
+                        ),
+                        const Text('HLA4:'),
+                        DropdownButton(
+                          value: hlaDonor4DropDown,
+                          icon: const Icon(Icons.arrow_downward),
+                          items: <String>[
+                            'A+',
+                            'B+',
+                            'AB+',
+                            'O+',
+                            'A-',
+                            'B-',
+                            'AB-',
+                            'O-'
+                          ].map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              hlaDonor4DropDown = newValue;
+                            });
+                          },
+                        )
+                      ]),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CircleAvatar(
+                          radius: 25,
+                          child: Image.asset(
+                            'assets/sex.png',
+                            height: 30,
+                          ),
+                          backgroundColor: Colors.transparent,
+                        ),
+                        const Text('HLA5:'),
+                        DropdownButton(
+                          value: hlaDonor5DropDown,
+                          icon: const Icon(Icons.arrow_downward),
+                          items: <String>[
+                            'A+',
+                            'B+',
+                            'AB+',
+                            'O+',
+                            'A-',
+                            'B-',
+                            'AB-',
+                            'O-'
+                          ].map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              hlaDonor5DropDown = newValue;
+                            });
+                          },
+                        ),
+                        const Text('HLA6:'),
+                        DropdownButton(
+                          value: hlaDonor6DropDown,
+                          icon: const Icon(Icons.arrow_downward),
+                          items: <String>[
+                            'A+',
+                            'B+',
+                            'AB+',
+                            'O+',
+                            'A-',
+                            'B-',
+                            'AB-',
+                            'O-'
+                          ].map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              hlaDonor6DropDown = newValue;
+                            });
+                          },
+                        ),
+                      ]),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Row(children: [
+                    CircleAvatar(
+                      radius: 25,
+                      child: Image.asset(
+                        'assets/dob.png',
+                        height: 30,
+                      ),
+                      backgroundColor: Colors.transparent,
+                    ),
+                    Expanded(
+                      child: DateTimeFormField(
+                        decoration: const InputDecoration(
+                            hintStyle: TextStyle(),
+                            errorStyle: TextStyle(),
+                            border: OutlineInputBorder(),
+                            suffixIcon: Icon(Icons.event_note),
+                            labelText: 'DOB',
+                            hintText: 'Date of Birth'),
+                        mode: DateTimeFieldPickerMode.date,
+                        autovalidateMode: AutovalidateMode.always,
+                        onDateSelected: (DateTime value) {
+                          clientData.dob = value;
+                        },
+                      ),
+                    ),
+                  ]),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Row(children: [
+                    CircleAvatar(
+                      radius: 25,
+                      child: Image.asset(
+                        'assets/height.png',
+                        height: 30,
+                      ),
+                      backgroundColor: Colors.transparent,
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        controller: heightTextField,
+                        keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.next,
+                        style: const TextStyle(),
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: "Kidney Size(cm)",
+                          contentPadding: EdgeInsets.only(
+                              bottom: 10.0, left: 10.0, right: 10.0),
+                        ),
+                        onSaved: (value) {
+                          if (value!.isNotEmpty) {
+                            clientData.height = double.parse(value);
+                          }
+                        },
+                      ),
+                    ),
+                  ]),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Row(children: [
+                    CircleAvatar(
+                      radius: 25,
+                      child: Image.asset(
                         'assets/address.png',
                         height: 30,
                       ),
@@ -392,6 +936,42 @@ class _AddPatientPageState extends State<AddPatientPage> {
                     CircleAvatar(
                       radius: 25,
                       child: Image.asset(
+                        'assets/mobile.png',
+                        height: 30,
+                      ),
+                      backgroundColor: Colors.transparent,
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        controller: phoneNumberTextField,
+                        textInputAction: TextInputAction.next,
+                        style: const TextStyle(),
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: "Mobile",
+                          contentPadding:
+                              EdgeInsets.only(left: 10.0, right: 10.0),
+                        ),
+                        keyboardType: TextInputType.phone,
+                        onSaved: (value) {
+                          clientData.mobileNo = value;
+                        },
+                        validator: _validatePhoneNumber,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                          // Fit the validating format.
+                          _phoneNumberFormatter,
+                        ],
+                      ),
+                    ),
+                  ]),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Row(children: [
+                    CircleAvatar(
+                      radius: 25,
+                      child: Image.asset(
                         'assets/sex.png',
                         height: 30,
                       ),
@@ -399,10 +979,10 @@ class _AddPatientPageState extends State<AddPatientPage> {
                     ),
                     Expanded(
                       child: DropdownButtonFormField(
-                        value: sexDropDown,
+                        value: sexDonorDropDown,
                         icon: const Icon(Icons.arrow_downward),
                         decoration: const InputDecoration(
-                          labelText: "Sex:",
+                          labelText: "Gender:",
                           contentPadding: EdgeInsets.only(
                               bottom: 10.0, left: 10.0, right: 10.0),
                           border: OutlineInputBorder(),
@@ -420,7 +1000,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         }).toList(),
                         onChanged: (String? newValue) {
                           setState(() {
-                            sexDropDown = newValue;
+                            sexDonorDropDown = newValue;
                           });
                         },
                       ),
@@ -443,13 +1023,28 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         value: casteDropDown,
                         icon: const Icon(Icons.arrow_downward),
                         decoration: const InputDecoration(
-                          labelText: "Caste:",
+                          labelText: "Societal Distribution:",
                           contentPadding: EdgeInsets.only(
                               bottom: 10.0, left: 10.0, right: 10.0),
                           border: OutlineInputBorder(),
                         ),
-                        items: <String>['General', 'OBC', 'SC/ST']
-                            .map((String value) {
+                        items: <String>[
+                          'Hindu General',
+                          'Hindu OBC',
+                          'Hindu SC/ST',
+                          'Muslim General',
+                          'Muslim OBC',
+                          'Muslim SC/ST',
+                          'Christian General',
+                          'Christian OBC',
+                          'Christian SC/ST',
+                          'Sikh General',
+                          'Sikh OBC',
+                          'Sikh SC/ST',
+                          'Jain General',
+                          'Jain OBC',
+                          'Jain SC/ST'
+                        ].map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(value),
@@ -466,198 +1061,6 @@ class _AddPatientPageState extends State<AddPatientPage> {
                   const SizedBox(
                     height: 8,
                   ),
-                  Row(children: [
-                    CircleAvatar(
-                      radius: 25,
-                      child: Image.asset(
-                        'assets/weight.png',
-                        height: 30,
-                      ),
-                      backgroundColor: Colors.transparent,
-                    ),
-                    Expanded(
-                      child: TextFormField(
-                        controller: weightTextField,
-                        keyboardType: TextInputType.number,
-                        textInputAction: TextInputAction.next,
-                        style: const TextStyle(),
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: "Weight(kg)",
-                          contentPadding: EdgeInsets.only(
-                              bottom: 10.0, left: 10.0, right: 10.0),
-                        ),
-                        onSaved: (value) {
-                          if (value!.isNotEmpty) {
-                            clientData.weight = double.parse(value);
-                          }
-                        },
-                      ),
-                    ),
-                  ]),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Row(children: [
-                    CircleAvatar(
-                      radius: 25,
-                      child: Image.asset(
-                        'assets/height.png',
-                        height: 30,
-                      ),
-                      backgroundColor: Colors.transparent,
-                    ),
-                    Expanded(
-                      child: TextFormField(
-                        controller: heightTextField,
-                        keyboardType: TextInputType.number,
-                        textInputAction: TextInputAction.next,
-                        style: const TextStyle(),
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: "Height(cm)",
-                          contentPadding: EdgeInsets.only(
-                              bottom: 10.0, left: 10.0, right: 10.0),
-                        ),
-                        onSaved: (value) {
-                          if (value!.isNotEmpty) {
-                            clientData.height = double.parse(value);
-                          }
-                        },
-                      ),
-                    ),
-                  ]),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Row(children: [
-                    CircleAvatar(
-                      radius: 25,
-                      child: Image.asset(
-                        'assets/injuries.png',
-                        height: 30,
-                      ),
-                      backgroundColor: Colors.transparent,
-                    ),
-                    Expanded(
-                      child: TextFormField(
-                        textCapitalization: TextCapitalization.words,
-                        controller: injuriesTextField,
-                        textInputAction: TextInputAction.next,
-                        style: const TextStyle(),
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: "Injuries / Medical Problems",
-                          contentPadding: EdgeInsets.only(
-                              bottom: 10.0, left: 10.0, right: 10.0),
-                        ),
-                        onSaved: (value) {
-                          clientData.injuries = value;
-                        },
-                      ),
-                    ),
-                  ]),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Row(children: [
-                    CircleAvatar(
-                      radius: 25,
-                      child: Image.asset(
-                        'assets/education.png',
-                        height: 30,
-                      ),
-                      backgroundColor: Colors.transparent,
-                    ),
-                    Expanded(
-                      child: TextFormField(
-                        textCapitalization: TextCapitalization.words,
-                        controller: educationTextField,
-                        textInputAction: TextInputAction.next,
-                        style: const TextStyle(),
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: "Education",
-                          contentPadding: EdgeInsets.only(
-                              bottom: 10.0, left: 10.0, right: 10.0),
-                        ),
-                        onSaved: (value) {
-                          clientData.education = value;
-                        },
-                      ),
-                    ),
-                  ]),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Row(children: [
-                    CircleAvatar(
-                      radius: 25,
-                      child: Image.asset(
-                        'assets/occupation.png',
-                        height: 30,
-                      ),
-                      backgroundColor: Colors.transparent,
-                    ),
-                    Expanded(
-                      child: TextFormField(
-                        textCapitalization: TextCapitalization.words,
-                        controller: occupationTextField,
-                        textInputAction: TextInputAction.next,
-                        style: const TextStyle(),
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: "Occupation",
-                          contentPadding: EdgeInsets.only(
-                              bottom: 10.0, left: 10.0, right: 10.0),
-                        ),
-                        onSaved: (value) {
-                          clientData.occupation = value;
-                        },
-                      ),
-                    ),
-                  ]),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Row(children: [
-                    CircleAvatar(
-                      radius: 25,
-                      child: Image.asset(
-                        'assets/date.png',
-                        height: 30,
-                      ),
-                      backgroundColor: Colors.transparent,
-                    ),
-                    Expanded(
-                      child: DateTimeFormField(
-                        decoration: const InputDecoration(
-                          hintStyle: TextStyle(),
-                          errorStyle: TextStyle(),
-                          border: OutlineInputBorder(),
-                          suffixIcon: Icon(Icons.event_note),
-                          labelText: 'Start Date',
-                        ),
-                        initialValue: today,
-                        mode: DateTimeFieldPickerMode.date,
-                        onDateSelected: (DateTime value) {
-                          try {
-                            int months = int.parse(paymentNumberTextField.text);
-                            clientData.startDate = value;
-                            clientData.startDate ??= today;
-                            months = months.abs();
-                            clientData.endDate = DateTime(
-                                clientData.startDate!.year,
-                                clientData.startDate!.month + months,
-                                clientData.startDate!.day);
-                          } catch (E) {
-                            globalShowInSnackBar(scaffoldMessengerKey,
-                                "Please Enter No of Payments!!");
-                          }
-                        },
-                      ),
-                    ),
-                  ]),
                   sizedBoxSpace,
                 ],
               ),

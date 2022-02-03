@@ -20,7 +20,7 @@ class _PatientsState extends State<Patients> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Patients"),
+        title: const Text("Patients"),
       ),
       body: Container(),
       floatingActionButton: FloatingActionButton(

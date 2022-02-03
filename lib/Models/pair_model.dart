@@ -1,7 +1,7 @@
-// import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class PairModel {
-  // DatabaseReference id;
+  DatabaseReference? id;
   String? name;
   String? registrationId;
   String? fathersName;
@@ -42,10 +42,10 @@ class PairModel {
       this.weight,
       this.due,
       this.masterFilter});
-  // void setId(DatabaseReference id)
-  // {
-  //   this.id=id;
-  // }
+  void setId(DatabaseReference id) {
+    this.id = id;
+  }
+
   factory PairModel.fromJson(Map<String, dynamic> json1) {
     String startDate = json1['StartDate'];
     String endDate = json1['EndDate'];
