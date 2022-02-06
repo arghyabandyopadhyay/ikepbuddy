@@ -15,19 +15,17 @@ class AddPatientPage extends StatefulWidget {
 class _AddPatientPageState extends State<AddPatientPage> {
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  PairModel clientData = PairModel();
+  PairModel pairData = PairModel();
   DateTime? now, today;
   var phoneNumberTextField = TextEditingController();
-  var paymentNumberTextField = TextEditingController();
+  var donorPhoneNumberTextField = TextEditingController();
   var nameTextField = TextEditingController();
+  var donorNameTextField = TextEditingController();
   var addressTextField = TextEditingController();
-  var fathersNameTextField = TextEditingController();
-  var educationTextField = TextEditingController();
-  var occupationTextField = TextEditingController();
-  var injuriesTextField = TextEditingController();
+  var donorAddressTextField = TextEditingController();
   var registrationIdTextField = TextEditingController();
   var heightTextField = TextEditingController();
-  var weightTextField = TextEditingController();
+  var donorHeightTextField = TextEditingController();
   String? sexPatientDropDown;
   String? sexDonorDropDown;
   String? bloodGroupPatientDropDown;
@@ -66,15 +64,30 @@ class _AddPatientPageState extends State<AddPatientPage> {
       // Start validating on every change.
     } else {
       form.save();
-      clientData.sex = sexPatientDropDown;
-      clientData.caste = casteDropDown;
+      pairData.gender = sexPatientDropDown;
+      pairData.dGender = sexDonorDropDown;
+      pairData.sd = casteDropDown;
+      pairData.h = [];
+      pairData.h!.add(hlaPatient1DropDown!);
+      pairData.h!.add(hlaPatient2DropDown!);
+      pairData.h!.add(hlaPatient3DropDown!);
+      pairData.h!.add(hlaPatient4DropDown!);
+      pairData.h!.add(hlaPatient5DropDown!);
+      pairData.h!.add(hlaPatient6DropDown!);
+      pairData.dH = [];
+      pairData.dH!.add(hlaDonor1DropDown!);
+      pairData.dH!.add(hlaDonor2DropDown!);
+      pairData.dH!.add(hlaDonor3DropDown!);
+      pairData.dH!.add(hlaDonor4DropDown!);
+      pairData.dH!.add(hlaDonor5DropDown!);
+      pairData.h!.add(hlaDonor6DropDown!);
       // try{
-      // if(clientData.startDate==null)clientData.startDate=today;
+      // if(pairData.startDate==null)pairData.startDate=today;
       // int months=int.parse(paymentNumberTextField.text);
       // months=months.abs();
-      // clientData.endDate = DateTime(clientData.startDate.year,clientData.startDate.month+months,clientData.startDate.day);
-      // globalShowInSnackBar(scaffoldMessengerKey,clientData.toJson());
-      widget.callback(clientData);
+      // pairData.endDate = DateTime(pairData.startDate.year,pairData.startDate.month+months,pairData.startDate.day);
+      // globalShowInSnackBar(scaffoldMessengerKey,pairData.toJson());
+      widget.callback(pairData);
       Navigator.pop(context);
       // }
       // catch(E){
@@ -93,7 +106,6 @@ class _AddPatientPageState extends State<AddPatientPage> {
   //Overrides
   @override
   void initState() {
-    paymentNumberTextField.text = "1";
     now = DateTime.now();
     today = DateTime(now!.year, now!.month, now!.day);
     super.initState();
@@ -157,7 +169,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         ),
                         validator: _validateName,
                         onSaved: (value) {
-                          clientData.name = value;
+                          pairData.name = value;
                         },
                       ),
                     ),
@@ -420,7 +432,8 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         mode: DateTimeFieldPickerMode.date,
                         autovalidateMode: AutovalidateMode.always,
                         onDateSelected: (DateTime value) {
-                          clientData.dob = value;
+                          Duration diff = value.difference(DateTime.now());
+                          pairData.age = ((diff.inDays) / 365).round();
                         },
                       ),
                     ),
@@ -451,7 +464,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         ),
                         onSaved: (value) {
                           if (value!.isNotEmpty) {
-                            clientData.height = double.parse(value);
+                            pairData.k = double.parse(value);
                           }
                         },
                       ),
@@ -478,12 +491,12 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         style: const TextStyle(),
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: "Address",
+                          labelText: "Pincode",
                           contentPadding: EdgeInsets.only(
                               bottom: 10.0, left: 10.0, right: 10.0),
                         ),
                         onSaved: (value) {
-                          clientData.address = value;
+                          pairData.pin = value as int?;
                         },
                       ),
                     ),
@@ -513,7 +526,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         ),
                         keyboardType: TextInputType.phone,
                         onSaved: (value) {
-                          clientData.mobileNo = value;
+                          pairData.mobileNo = value;
                         },
                         validator: _validatePhoneNumber,
                         inputFormatters: <TextInputFormatter>[
@@ -587,7 +600,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                     Expanded(
                       child: TextFormField(
                         textCapitalization: TextCapitalization.words,
-                        controller: nameTextField,
+                        controller: donorNameTextField,
                         textInputAction: TextInputAction.next,
                         style: const TextStyle(),
                         decoration: const InputDecoration(
@@ -598,7 +611,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         ),
                         validator: _validateName,
                         onSaved: (value) {
-                          clientData.name = value;
+                          pairData.dName = value;
                         },
                       ),
                     ),
@@ -861,7 +874,8 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         mode: DateTimeFieldPickerMode.date,
                         autovalidateMode: AutovalidateMode.always,
                         onDateSelected: (DateTime value) {
-                          clientData.dob = value;
+                          Duration diff = value.difference(DateTime.now());
+                          pairData.dAge = ((diff.inDays) / 365).round();
                         },
                       ),
                     ),
@@ -880,7 +894,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                     ),
                     Expanded(
                       child: TextFormField(
-                        controller: heightTextField,
+                        controller: donorHeightTextField,
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
                         style: const TextStyle(),
@@ -892,7 +906,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         ),
                         onSaved: (value) {
                           if (value!.isNotEmpty) {
-                            clientData.height = double.parse(value);
+                            pairData.dK = double.parse(value);
                           }
                         },
                       ),
@@ -913,18 +927,18 @@ class _AddPatientPageState extends State<AddPatientPage> {
                     Expanded(
                       child: TextFormField(
                         textCapitalization: TextCapitalization.words,
-                        controller: addressTextField,
+                        controller: donorAddressTextField,
                         textInputAction: TextInputAction.next,
                         keyboardType: TextInputType.multiline,
                         style: const TextStyle(),
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: "Address",
+                          labelText: "Pincode",
                           contentPadding: EdgeInsets.only(
                               bottom: 10.0, left: 10.0, right: 10.0),
                         ),
                         onSaved: (value) {
-                          clientData.address = value;
+                          pairData.dPin = value as int?;
                         },
                       ),
                     ),
@@ -943,7 +957,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                     ),
                     Expanded(
                       child: TextFormField(
-                        controller: phoneNumberTextField,
+                        controller: donorPhoneNumberTextField,
                         textInputAction: TextInputAction.next,
                         style: const TextStyle(),
                         decoration: const InputDecoration(
@@ -954,7 +968,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         ),
                         keyboardType: TextInputType.phone,
                         onSaved: (value) {
-                          clientData.mobileNo = value;
+                          pairData.dMobileNo = value;
                         },
                         validator: _validatePhoneNumber,
                         inputFormatters: <TextInputFormatter>[
