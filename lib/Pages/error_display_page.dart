@@ -1,19 +1,19 @@
-import '../Models/drawerActionModel.dart';
-import 'package:chronicle/Modules/auth.dart';
-import 'package:chronicle/Modules/universalModule.dart';
-import 'package:chronicle/Pages/routingPage.dart';
-import 'package:chronicle/globalClass.dart';
-import 'package:chronicle/Pages/MasterPages/userInfoScreen.dart';
-import 'package:chronicle/Widgets/drawerContent.dart';
+import '../Models/drawer_action_model.dart';
+import '../Modules/auth.dart';
+import '../Modules/universal_module.dart';
+import 'routing_page.dart';
+import '../global_class.dart';
+import 'user_info_screen.dart';
+import '../Widgets/drawer_content.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ErrorDisplayPage extends StatefulWidget {
-  final String asset;
-  final String message;
-  final String appBarText;
-  ErrorDisplayPage({Key key, this.asset, this.message, this.appBarText})
+  final String? asset;
+  final String? message;
+  final String? appBarText;
+  const ErrorDisplayPage({Key? key, this.asset, this.message, this.appBarText})
       : super(key: key);
 
   @override
@@ -33,7 +33,7 @@ class _ErrorDisplayPageState extends State<ErrorDisplayPage> {
     return ScaffoldMessenger(
       child: Scaffold(
           appBar: AppBar(
-            title: Text(widget.appBarText),
+            title: Text(widget.appBarText ?? ""),
           ),
           drawer: Drawer(
             child: DrawerContent(
@@ -44,14 +44,14 @@ class _ErrorDisplayPageState extends State<ErrorDisplayPage> {
                       builder: (context) => UserInfoScreen()));
                 }),
                 DrawerActionModel(Icons.logout, "Log out", () async {
-                  await Authentication.signOut(context: context);
+                  await Authentication.signOut(context);
                   Navigator.popUntil(context, (route) => route.isFirst);
                   Navigator.of(context).pushReplacement(PageRouteBuilder(
                     pageBuilder: (context, animation, secondaryAnimation) =>
                         RoutingPage(),
                     transitionsBuilder:
                         (context, animation, secondaryAnimation, child) {
-                      var begin = Offset(-1.0, 0.0);
+                      var begin = const Offset(-1.0, 0.0);
                       var end = Offset.zero;
                       var curve = Curves.ease;
                       var tween = Tween(begin: begin, end: end)
@@ -71,14 +71,14 @@ class _ErrorDisplayPageState extends State<ErrorDisplayPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Image.asset('assets/${widget.asset}'),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Text(
-                widget.message,
+                widget.message ?? "",
                 textAlign: TextAlign.center,
                 textScaleFactor: 1,
-                style: TextStyle(fontSize: 25),
+                style: const TextStyle(fontSize: 25),
               )
             ],
           )),
@@ -90,7 +90,7 @@ class _ErrorDisplayPageState extends State<ErrorDisplayPage> {
                   heroTag: "contact_usButton",
                   onPressed: () async {
                     String url =
-                        'mailto:<chroniclebusinesssolutions@gmail.com>?subject=ID Blocked ${GlobalClass.userDetail != null ? GlobalClass.userDetail.email : ""}';
+                        'mailto:<chroniclebusinesssolutions@gmail.com>?subject=ID Blocked ${GlobalClass.userDetail != null ? GlobalClass.userDetail!.email : ""}';
                     if (await canLaunch(url)) {
                       await launch(url);
                     } else {
@@ -98,10 +98,10 @@ class _ErrorDisplayPageState extends State<ErrorDisplayPage> {
                           scaffoldMessengerKey, 'Oops!! Something went wrong.');
                     }
                   },
-                  icon: Icon(Icons.contact_mail),
-                  label: Text("Contact Us"),
+                  icon: const Icon(Icons.contact_mail),
+                  label: const Text("Contact Us"),
                 ),
-              SizedBox(
+              const SizedBox(
                 width: 10,
               ),
               FloatingActionButton.extended(
@@ -110,8 +110,8 @@ class _ErrorDisplayPageState extends State<ErrorDisplayPage> {
                   Navigator.of(context).pushReplacement(
                       CupertinoPageRoute(builder: (context) => RoutingPage()));
                 },
-                label: Text("Refresh"),
-                icon: Icon(Icons.refresh),
+                label: const Text("Refresh"),
+                icon: const Icon(Icons.refresh),
               ),
             ],
           )),

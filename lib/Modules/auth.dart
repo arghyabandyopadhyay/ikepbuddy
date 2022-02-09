@@ -49,10 +49,10 @@ class FirebaseAuthService {
         _googleSignIn = googleSignin;
 
   User _userFromFirebase(User? user) {
-    if (user == null) {
-      return null;
+    if (user != null) {
+      return user;
     }
-    return user;
+    throw "nullPointerExeption";
   }
 
   Stream<User>? get onAuthStateChanged {
@@ -86,21 +86,21 @@ class FirebaseAuthService {
 }
 
 class Authentication {
-  static String uniqueId;
-  static String uniqueuserName;
-  static String uniqueuserEmail;
-  static String uniqueUserimageUrl;
+  static String? uniqueId;
+  static String? uniqueuserName;
+  static String? uniqueuserEmail;
+  static String? uniqueUserimageUrl;
   static Future<FirebaseApp> initializeFirebase({
-    BuildContext context,
+    BuildContext? context,
   }) async {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
     return firebaseApp;
   }
 
-  static Future<User> signInWithGoogle(BuildContext context,
+  static Future<User?> signInWithGoogle(BuildContext context,
       GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey) async {
     FirebaseAuth auth = FirebaseAuth.instance;
-    User user;
+    User? user;
     if (kIsWeb) {
       GoogleAuthProvider authProvider = GoogleAuthProvider();
 
@@ -110,12 +110,12 @@ class Authentication {
 
         user = userCredential.user;
       } catch (e) {
-        globalShowInSnackBar(scaffoldMessengerKey, e);
+        globalShowInSnackBar(scaffoldMessengerKey, e.toString());
       }
     } else {
       final GoogleSignIn googleSignIn = GoogleSignIn();
 
-      final GoogleSignInAccount googleSignInAccount =
+      final GoogleSignInAccount? googleSignInAccount =
           (await googleSignIn.signIn());
 
       if (googleSignInAccount != null) {
@@ -168,20 +168,20 @@ class Authentication {
     return user;
   }
 
-  static SnackBar customSnackBar({String content}) {
+  static SnackBar customSnackBar({String? content}) {
     return SnackBar(
       backgroundColor: Colors.black,
       content: Text(
-        content,
-        style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+        content ?? "",
+        style: const TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
       ),
     );
   }
 
-  Future<User> registerWithEmailPassword(String email, String password,
+  Future<User?> registerWithEmailPassword(String email, String password,
       GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey) async {
     await Firebase.initializeApp();
-    User user;
+    User? user;
 
     try {
       UserCredential userCredential =
@@ -205,16 +205,16 @@ class Authentication {
             scaffoldMessengerKey, 'The account already exists for that email.');
       }
     } catch (e) {
-      globalShowInSnackBar(scaffoldMessengerKey, e);
+      globalShowInSnackBar(scaffoldMessengerKey, e.toString());
     }
 
     return user;
   }
 
-  Future<User> signInWithEmailPassword(String email, String password,
+  Future<User?> signInWithEmailPassword(String email, String password,
       GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey) async {
     await Firebase.initializeApp();
-    User user;
+    User? user;
 
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -248,7 +248,7 @@ class Authentication {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool authSignedIn = prefs.getBool('auth') ?? false;
 
-    final User user = _auth.currentUser;
+    final User? user = _auth.currentUser;
 
     if (authSignedIn == true) {
       if (user != null) {
@@ -260,7 +260,7 @@ class Authentication {
     }
   }
 
-  static Future<void> signOut({BuildContext context}) async {
+  static Future<void> signOut(BuildContext context) async {
     setLastRegister("");
     final GoogleSignIn googleSignIn = GoogleSignIn();
 

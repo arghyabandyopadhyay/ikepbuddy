@@ -1,4 +1,4 @@
-import '../Models/modalOptionModel.dart';
+import '../Models/modal_option_model.dart';
 import '../Modules/apiModule.dart';
 import '../Modules/error_page.dart';
 import '../Modules/universal_module.dart';
@@ -203,27 +203,31 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                           showDialog(
                                               context: context,
                                               builder: (_) => AlertDialog(
-                                                    title: Text("Confirm Send"),
-                                                    content: Text(
+                                                    title: const Text(
+                                                        "Confirm Send"),
+                                                    content: const Text(
                                                         "Are you sure to send a reminder to all the clients?"),
                                                     actions: [
                                                       ActionChip(
-                                                          label: Text("Yes"),
+                                                          label:
+                                                              const Text("Yes"),
                                                           onPressed: () {
                                                             List<String>
                                                                 addressList =
                                                                 [];
-                                                            clients.forEach(
+                                                            clients?.forEach(
                                                                 (PairModel
                                                                     element) {
-                                                              String address =
+                                                              String? address =
                                                                   element
                                                                       .mobileNo;
                                                               if (address !=
                                                                       null &&
-                                                                  address != "")
+                                                                  address !=
+                                                                      "") {
                                                                 addressList.add(
                                                                     address);
+                                                              }
                                                             });
                                                             sendSMS(
                                                                 message:
@@ -248,44 +252,43 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                             "Send Sms using Sms Gateway",
                                         icon: FontAwesomeIcons.server,
                                         onTap: () {
-                                          if (GlobalClass.userDetail.smsAccessToken != null &&
-                                              GlobalClass
-                                                      .userDetail.smsApiUrl !=
+                                          if (GlobalClass.userDetail
+                                                      ?.smsAccessToken !=
                                                   null &&
-                                              GlobalClass
-                                                      .userDetail.smsUserId !=
+                                              GlobalClass.userDetail?.smsApiUrl !=
                                                   null &&
-                                              GlobalClass
-                                                      .userDetail.smsMobileNo !=
+                                              GlobalClass.userDetail?.smsUserId !=
                                                   null &&
-                                              GlobalClass
-                                                      .userDetail.smsAccessToken !=
+                                              GlobalClass.userDetail?.smsMobileNo !=
+                                                  null &&
+                                              GlobalClass.userDetail
+                                                      ?.smsAccessToken !=
+                                                  "" &&
+                                              GlobalClass.userDetail?.smsApiUrl !=
                                                   "" &&
                                               GlobalClass
-                                                      .userDetail.smsApiUrl !=
+                                                      .userDetail?.smsUserId !=
                                                   "" &&
-                                              GlobalClass
-                                                      .userDetail.smsUserId !=
-                                                  "" &&
-                                              GlobalClass
-                                                      .userDetail.smsMobileNo !=
+                                              GlobalClass.userDetail
+                                                      ?.smsMobileNo !=
                                                   "") {
                                             Navigator.of(_).pop();
                                             showDialog(
                                                 context: context,
                                                 builder: (_) => AlertDialog(
-                                                      title:
-                                                          Text("Confirm Send"),
-                                                      content: Text(
+                                                      title: const Text(
+                                                          "Confirm Send"),
+                                                      content: const Text(
                                                           "Are you sure to send a reminder to all the clients?"),
                                                       actions: [
                                                         ActionChip(
-                                                            label: Text("Yes"),
+                                                            label: const Text(
+                                                                "Yes"),
                                                             onPressed: () {
                                                               try {
                                                                 postForBulkMessage(
-                                                                    clients,
-                                                                    "${GlobalClass.userDetail.reminderMessage != null && GlobalClass.userDetail.reminderMessage != "" ? GlobalClass.userDetail.reminderMessage : "Your subscription has come to an end"
+                                                                    clients!,
+                                                                    "${GlobalClass.userDetail?.reminderMessage != null && GlobalClass.userDetail.reminderMessage != "" ? GlobalClass.userDetail.reminderMessage : "Your subscription has come to an end"
                                                                         ", please clear your dues for further continuation of services."}\npowered by Chronicle Business Solutions");
                                                                 globalShowInSnackBar(
                                                                     scaffoldMessengerKey,
