@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppBarVariables {
   static final List<Widget> aboutBoxChildren = <Widget>[
     const SizedBox(height: 24),
-    const Text('Chronicle is an easy to go Register maintaining application. '
+    const Text('IKEP Buddy is an easy to go Register maintaining application. '
         'It is capable of managing your registers and maintaining '
         'the fee records of your clients. '),
   ];
@@ -20,10 +20,10 @@ class AppBarVariables {
                       width: 40,
                       height: 40,
                     ),
-                    applicationName: 'Chronicle',
+                    applicationName: 'IKEP Buddy',
                     applicationVersion: 'Version 2021.2',
                     applicationLegalese:
-                        '\u{a9} 2021 Chronicle Business Solutions',
+                        '\u{a9} 2021 IKEP Buddy Business Solutions',
                     children: AppBarVariables.aboutBoxChildren,
                   );
                 },
@@ -32,7 +32,7 @@ class AppBarVariables {
                   height: 25,
                   width: 25,
                 )),
-            Text(" Chronicle")
+            Text(" IKEP Buddy")
           ],
         ),
       );

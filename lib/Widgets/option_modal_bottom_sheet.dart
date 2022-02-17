@@ -35,14 +35,12 @@ class OptionModalBottomSheet extends StatelessWidget {
               itemCount: list!.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(list![index].particulars!),
+                  title: Text(list![index].particulars),
                   leading: Icon(
                     list![index].icon,
                     color: list![index].iconColor,
                   ),
-                  onTap: () {
-                    list![index].onTap!();
-                  },
+                  onTap: list![index].onTap,
                 );
               },
             ),

@@ -126,7 +126,7 @@ class _IkepBuddyState extends State<IkepBuddy> {
       GlobalClass.applicationToken = token;
       if (GlobalClass.user != null) {
         getUserDetails().then((value) => {
-              if (value.tokens == null)
+              if (value!.tokens == null)
                 {
                   addToken(
                       value,
@@ -163,7 +163,7 @@ class _IkepBuddyState extends State<IkepBuddy> {
       GlobalClass.applicationToken = token;
       if (GlobalClass.user != null) {
         getUserDetails().then((value) => {
-              if (value.tokens == null)
+              if (value!.tokens == null)
                 {
                   addToken(
                       value,
@@ -317,7 +317,7 @@ class _IkepBuddyState extends State<IkepBuddy> {
               future: Authentication.initializeFirebase(context: context),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return ErrorDisplayPage(
+                  return const ErrorDisplayPage(
                     appBarText: "Error 404",
                     asset: "errorHasOccured.jpg",
                     message: 'Please contact System Administrator',

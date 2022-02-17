@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:firebase_database/firebase_database.dart';
 
 class PairModel {
@@ -25,7 +23,9 @@ class PairModel {
   int? priority;
   List<String>? sPref;
   String? sd;
+  String? hospitalUID;
   String? masterFilter;
+  bool isSelected = false;
   PairModel(
       {this.index,
       this.name,
@@ -48,6 +48,7 @@ class PairModel {
       this.priority,
       this.sPref,
       this.sd,
+      this.hospitalUID,
       this.masterFilter});
 
   void setPair(PairModel pair) {
@@ -72,6 +73,7 @@ class PairModel {
     priority = pair.getPriority();
     sPref = pair.getsPref();
     sd = pair.getSd();
+    hospitalUID = pair.getHospitalUID();
     masterFilter = pair.getMasterFilter();
   }
 
@@ -97,14 +99,15 @@ class PairModel {
         "DKidneySize": dK,
         "Hla": h.toString(),
         "DHla": dH.toString(),
+        "HospitalUID": hospitalUID,
         "MasterFilter": masterFilter,
       };
 
   factory PairModel.fromJson(Map<String, dynamic> json1) {
     String name1 = json1['Name'];
     String dName1 = json1['DName'];
-    String mobile = json1['MobileNo'];
-    String dMobile = json1['DMobileNo'];
+    String? mobile = json1['MobileNo'];
+    String? dMobile = json1['DMobileNo'];
     String masterFilter = json1['MasterFilter'] ??
         ((name1 + dName1 + (mobile ?? "") + (dMobile ?? ""))
             .replaceAll(RegExp(r'\W+'), "")
@@ -118,6 +121,7 @@ class PairModel {
         uid: json1['UID'],
         b: json1['BloodGroup'],
         dB: json1['DBloodGroup'],
+        hospitalUID: json1['HospitalUID'],
         pin: json1['Pincode'] != null
             ? int.parse(json1['Pincode'].toString())
             : null,
@@ -167,6 +171,7 @@ class PairModel {
         priority: priority,
         sPref: sPref,
         sd: sd,
+        hospitalUID: hospitalUID,
         masterFilter: masterFilter);
   }
 
@@ -260,6 +265,10 @@ class PairModel {
 
   String? getSd() {
     return sd;
+  }
+
+  String? getHospitalUID() {
+    return hospitalUID;
   }
 
   String? getMasterFilter() {

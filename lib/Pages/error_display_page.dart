@@ -21,7 +21,7 @@ class ErrorDisplayPage extends StatefulWidget {
 }
 
 class _ErrorDisplayPageState extends State<ErrorDisplayPage> {
-  GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = new GlobalKey();
+  GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey();
 
   @override
   void initState() {
@@ -41,7 +41,8 @@ class _ErrorDisplayPageState extends State<ErrorDisplayPage> {
                 DrawerActionModel(Icons.account_circle, "Profile", () async {
                   Navigator.pop(context);
                   Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) => UserInfoScreen()));
+                      builder: (context) =>
+                          UserInfoScreen(mainScreenContext: context)));
                 }),
                 DrawerActionModel(Icons.logout, "Log out", () async {
                   await Authentication.signOut(context);
@@ -90,7 +91,7 @@ class _ErrorDisplayPageState extends State<ErrorDisplayPage> {
                   heroTag: "contact_usButton",
                   onPressed: () async {
                     String url =
-                        'mailto:<chroniclebusinesssolutions@gmail.com>?subject=ID Blocked ${GlobalClass.userDetail != null ? GlobalClass.userDetail!.email : ""}';
+                        'mailto:<IKEP Buddybusinesssolutions@gmail.com>?subject=ID Blocked ${GlobalClass.userDetail != null ? GlobalClass.userDetail!.email : ""}';
                     if (await canLaunch(url)) {
                       await launch(url);
                     } else {

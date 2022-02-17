@@ -1,5 +1,5 @@
 import '../Models/modal_option_model.dart';
-import '../Modules/apiModule.dart';
+import '../Modules/api_module.dart';
 import '../Modules/error_page.dart';
 import '../Modules/universal_module.dart';
 import '../Widgets/loader_widget.dart';
@@ -13,7 +13,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import '../Models/pair_model.dart';
 import '../Widgets/client_list.dart';
-import 'TutorPages/client_information_page.dart';
+import '../Pages/client_information_page.dart';
 import '../global_class.dart';
 
 class NotificationsPage extends StatefulWidget {
@@ -68,7 +68,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
     searchResult.clear();
     if (_isSearching && clients != null) {
       searchResult = clients!
-          .where((PairModel element) => (element.masterFilter.toLowerCase())
+          .where((PairModel element) => (element.masterFilter!.toLowerCase())
               .contains(
                   searchText.toLowerCase().replaceAll(RegExp(r"\s+"), "")))
           .toList();
@@ -231,8 +231,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                                             });
                                                             sendSMS(
                                                                 message:
-                                                                    "${GlobalClass.userDetail.reminderMessage != null && GlobalClass.userDetail.reminderMessage != "" ? GlobalClass.userDetail.reminderMessage : "Your subscription has come to an end"
-                                                                        ", please clear your dues for further continuation of services."}\npowered by Chronicle Business Solutions",
+                                                                    "${GlobalClass.userDetail!.reminderMessage != null && GlobalClass.userDetail!.reminderMessage != "" ? GlobalClass.userDetail!.reminderMessage : "Your subscription has come to an end"
+                                                                        ", please clear your dues for further continuation of services."}\npowered by IKEP Buddy Business Solutions",
                                                                 recipients:
                                                                     addressList);
                                                             Navigator.of(_)
@@ -288,8 +288,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                                               try {
                                                                 postForBulkMessage(
                                                                     clients!,
-                                                                    "${GlobalClass.userDetail?.reminderMessage != null && GlobalClass.userDetail.reminderMessage != "" ? GlobalClass.userDetail.reminderMessage : "Your subscription has come to an end"
-                                                                        ", please clear your dues for further continuation of services."}\npowered by Chronicle Business Solutions");
+                                                                    "${GlobalClass.userDetail?.reminderMessage != null && GlobalClass.userDetail!.reminderMessage != "" ? GlobalClass.userDetail!.reminderMessage : "Your subscription has come to an end"
+                                                                        ", please clear your dues for further continuation of services."}\npowered by IKEP Buddy Business Solutions");
                                                                 globalShowInSnackBar(
                                                                     scaffoldMessengerKey,
                                                                     "Message Sent!!");
@@ -333,34 +333,55 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                   list: [
                                     ModalOptionModel(
                                       icon: Icons.more_time,
-                                      particulars: "Dues First",
+                                      particulars: "Age Ascending",
                                       onTap: () {
-                                        setState(() {
-                                          clients = sortClientsModule(
-                                              "Dues First", clients);
-                                        });
+                                        if (clients != null) {
+                                          setState(() {
+                                            clients = sortClientsModule(
+                                                "Age Ascending", clients!);
+                                          });
+                                        }
                                         Navigator.pop(alertDialogContext);
                                       },
                                     ),
                                     ModalOptionModel(
-                                      icon: Icons.hourglass_bottom_outlined,
-                                      particulars: "Last Months First",
+                                      icon: Icons.more_time,
+                                      particulars: "Age Descending",
                                       onTap: () {
-                                        setState(() {
-                                          clients = sortClientsModule(
-                                              "Last Months First", clients);
-                                        });
+                                        if (clients != null) {
+                                          setState(() {
+                                            clients = sortClientsModule(
+                                                "Age Descending", clients!);
+                                          });
+                                        }
                                         Navigator.pop(alertDialogContext);
                                       },
                                     ),
                                     ModalOptionModel(
-                                      icon: Icons.payment_outlined,
-                                      particulars: "Paid First",
+                                      icon: Icons.more_time,
+                                      particulars: "Registration Id Ascending",
                                       onTap: () {
-                                        setState(() {
-                                          clients = sortClientsModule(
-                                              "Paid First", clients);
-                                        });
+                                        if (clients != null) {
+                                          setState(() {
+                                            clients = sortClientsModule(
+                                                "Registration Id Ascending",
+                                                clients!);
+                                          });
+                                        }
+                                        Navigator.pop(alertDialogContext);
+                                      },
+                                    ),
+                                    ModalOptionModel(
+                                      icon: Icons.more_time,
+                                      particulars: "Registration Id Descending",
+                                      onTap: () {
+                                        if (clients != null) {
+                                          setState(() {
+                                            clients = sortClientsModule(
+                                                "Registration Id Descending",
+                                                clients!);
+                                          });
+                                        }
                                         Navigator.pop(alertDialogContext);
                                       },
                                     ),
@@ -368,10 +389,12 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                       icon: Icons.sort_by_alpha_outlined,
                                       particulars: "A-Z",
                                       onTap: () {
-                                        setState(() {
-                                          clients =
-                                              sortClientsModule("A-Z", clients);
-                                        });
+                                        if (clients != null) {
+                                          setState(() {
+                                            clients = sortClientsModule(
+                                                "A-Z", clients!);
+                                          });
+                                        }
                                         Navigator.pop(alertDialogContext);
                                       },
                                     ),
@@ -379,61 +402,19 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                       icon: Icons.sort_by_alpha_outlined,
                                       particulars: "Z-A",
                                       onTap: () {
-                                        setState(() {
-                                          clients =
-                                              sortClientsModule("Z-A", clients);
-                                        });
-                                        Navigator.pop(alertDialogContext);
-                                      },
-                                    ),
-                                    ModalOptionModel(
-                                      icon: Icons.date_range_outlined,
-                                      particulars: "Start Date Ascending",
-                                      onTap: () {
-                                        setState(() {
-                                          clients = sortClientsModule(
-                                              "Start Date Ascending", clients);
-                                        });
-                                        Navigator.pop(alertDialogContext);
-                                      },
-                                    ),
-                                    ModalOptionModel(
-                                      icon: Icons.date_range_outlined,
-                                      particulars: "Start Date Descending",
-                                      onTap: () {
-                                        setState(() {
-                                          clients = sortClientsModule(
-                                              "Start Date Descending", clients);
-                                        });
-                                        Navigator.pop(alertDialogContext);
-                                      },
-                                    ),
-                                    ModalOptionModel(
-                                      icon: Icons.date_range_outlined,
-                                      particulars: "End Date Ascending",
-                                      onTap: () {
-                                        setState(() {
-                                          clients = sortClientsModule(
-                                              "End Date Ascending", clients);
-                                        });
-                                        Navigator.pop(alertDialogContext);
-                                      },
-                                    ),
-                                    ModalOptionModel(
-                                      icon: Icons.date_range_outlined,
-                                      particulars: "End Date Descending",
-                                      onTap: () {
-                                        setState(() {
-                                          clients = sortClientsModule(
-                                              "End Date Descending", clients);
-                                        });
+                                        if (clients != null) {
+                                          setState(() {
+                                            clients = sortClientsModule(
+                                                "Z-A", clients!);
+                                          });
+                                        }
                                         Navigator.pop(alertDialogContext);
                                       },
                                     ),
                                   ]);
                             });
                       }),
-                  if (clients != null && clients.length != 0)
+                  if (clients != null && clients!.isNotEmpty)
                     ModalOptionModel(
                         particulars: "Move to top",
                         icon: Icons.vertical_align_top_outlined,
@@ -441,255 +422,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
                           Navigator.pop(popupContext);
                           scrollController.animateTo(
                             scrollController.position.minScrollExtent,
-                            duration: Duration(seconds: 1),
+                            duration: const Duration(seconds: 1),
                             curve: Curves.fastOutSlowIn,
                           );
-                        }),
-                  if (clients != null && clients.length != 0)
-                    ModalOptionModel(
-                        particulars: "Info",
-                        icon: Icons.info_outline,
-                        onTap: () {
-                          Navigator.pop(popupContext);
-                          int totalDues = 0;
-                          int totalPaid = 0;
-                          int totalLastMonths = 0;
-                          int totalPaidClients = 0;
-                          int totalDuedClients = 0;
-                          clients.forEach((element) {
-                            if (element.due > 0) {
-                              totalDues = totalDues + element.due;
-                              totalDuedClients = totalDuedClients + 1;
-                            } else if (element.due < 0) {
-                              totalPaid = totalPaid + element.due.abs() + 1;
-                              totalPaidClients = totalPaidClients + 1;
-                            } else
-                              totalLastMonths++;
-                          });
-                          showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                    title: Text("${"Notifications"}"),
-                                    content: Container(
-                                      child: ListView(
-                                        shrinkWrap: true,
-                                        physics: BouncingScrollPhysics(),
-                                        children: [
-                                          Container(
-                                            height: 50,
-                                            padding: EdgeInsets.all(10),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "Total Dues:",
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 17.0,
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                    child: Text(
-                                                  totalDues.toString(),
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 17.0,
-                                                  ),
-                                                  textAlign: TextAlign.end,
-                                                ))
-                                              ],
-                                            ),
-                                          ),
-                                          Container(
-                                            height: 50,
-                                            padding: EdgeInsets.all(10),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "Total Paid:",
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 17.0,
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                    child: Text(
-                                                  totalPaid.toString(),
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 17.0,
-                                                  ),
-                                                  textAlign: TextAlign.end,
-                                                ))
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Center(
-                                            child:
-                                                Text("*The data is in Months."),
-                                          ),
-                                          Container(
-                                            height: 50,
-                                            padding: EdgeInsets.all(10),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "Due Clients:",
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 17.0,
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                    child: Text(
-                                                  totalDuedClients.toString(),
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 17.0,
-                                                  ),
-                                                  textAlign: TextAlign.end,
-                                                ))
-                                              ],
-                                            ),
-                                          ),
-                                          Container(
-                                            height: 50,
-                                            padding: EdgeInsets.all(10),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "Paid Clients:",
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 17.0,
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                    child: Text(
-                                                  totalPaidClients.toString(),
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 17.0,
-                                                  ),
-                                                  textAlign: TextAlign.end,
-                                                ))
-                                              ],
-                                            ),
-                                          ),
-                                          Container(
-                                            height: 50,
-                                            padding: EdgeInsets.all(10),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "Last Months:",
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 17.0,
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                    child: Text(
-                                                  totalLastMonths.toString(),
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 17.0,
-                                                  ),
-                                                  textAlign: TextAlign.end,
-                                                ))
-                                              ],
-                                            ),
-                                          ),
-                                          Container(
-                                            height: 50,
-                                            padding: EdgeInsets.all(10),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "Total Clients:",
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 17.0,
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                    child: Text(
-                                                  (totalLastMonths +
-                                                          totalDuedClients +
-                                                          totalPaidClients)
-                                                      .toString(),
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 17.0,
-                                                  ),
-                                                  textAlign: TextAlign.end,
-                                                ))
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Center(
-                                            child: Text(
-                                                "*The data is in no of clients."),
-                                          ),
-                                        ],
-                                      ),
-                                      width: double.minPositive,
-                                    ),
-                                    actions: [
-                                      ActionChip(
-                                          label: Text("Close"),
-                                          onPressed: () {
-                                            Navigator.of(_).pop();
-                                          }),
-                                    ],
-                                  ));
                         }),
                 ].map((ModalOptionModel choice) {
                   return PopupMenuItem<ModalOptionModel>(
@@ -706,8 +441,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
           ],
         ),
         body: clients != null
-            ? clients.length == 0
-                ? NoDataError()
+            ? clients!.isEmpty
+                ? const NoDataError()
                 : Column(children: <Widget>[
                     Expanded(
                         child: _isSearching
@@ -728,13 +463,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                           .push(CupertinoPageRoute(
                                               builder: (context) =>
                                                   ClientInformationPage(
-                                                      client:
+                                                      pairData:
                                                           searchResult[index])))
                                           .then((value) {
                                         setState(() {
                                           if (value == null) {
                                           } else {
-                                            clients.remove(searchResult[index]);
+                                            clients!
+                                                .remove(searchResult[index]);
                                             searchResult
                                                 .remove(searchResult[index]);
                                           }
@@ -757,14 +493,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                                           deleteDatabaseNode(
                                                               searchResult[
                                                                       index]
-                                                                  .id);
+                                                                  .id!);
                                                           searchResult
                                                               .removeAt(index);
                                                           Navigator.of(_).pop();
                                                         });
                                                       }),
                                                   ActionChip(
-                                                      label: Text("No"),
+                                                      label: const Text("No"),
                                                       onPressed: () {
                                                         setState(() {
                                                           Navigator.of(_).pop();
@@ -778,19 +514,20 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                 updateShouldNotify: (oldValue, newValue) =>
                                     true,
                                 child: ClientList(
-                                    listItems: clients,
+                                    listItems: clients!,
                                     scaffoldMessengerKey: scaffoldMessengerKey,
                                     onTapList: (index) {
                                       Navigator.of(context)
                                           .push(CupertinoPageRoute(
                                               builder: (context) =>
                                                   ClientInformationPage(
-                                                      client: clients[index])))
+                                                      pairData:
+                                                          clients![index])))
                                           .then((value) {
                                         setState(() {
                                           if (value == null) {
                                           } else
-                                            clients.remove(clients[index]);
+                                            clients!.remove(clients![index]);
                                         });
                                       });
                                     },
@@ -804,18 +541,19 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                       showDialog(
                                           context: context,
                                           builder: (_) => AlertDialog(
-                                                title: Text("Confirm Delete"),
+                                                title: const Text(
+                                                    "Confirm Delete"),
                                                 content: Text(
-                                                    "Are you sure to delete ${clients[index].name}?"),
+                                                    "Are you sure to delete ${clients![index].name}?"),
                                                 actions: [
                                                   ActionChip(
                                                       label: Text("Yes"),
                                                       onPressed: () {
                                                         setState(() {
                                                           deleteDatabaseNode(
-                                                              clients[index]
-                                                                  .id);
-                                                          clients
+                                                              clients![index]
+                                                                  .id!);
+                                                          clients!
                                                               .removeAt(index);
                                                           Navigator.of(_).pop();
                                                         });

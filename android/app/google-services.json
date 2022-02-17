@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "228435858532",
+    "firebase_url": "https://ikepbuddy-default-rtdb.firebaseio.com",
+    "project_id": "ikepbuddy",
+    "storage_bucket": "ikepbuddy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:228435858532:android:d173bce9ff440d90823b71",
+        "android_client_info": {
+          "package_name": "com.ArghyaBandyopadhyay.ikepbuddy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "228435858532-l2blc70bra5cgkqvibbd80gvtgvg6055.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ArghyaBandyopadhyay.ikepbuddy",
+            "certificate_hash": "59a91b9f6bb03a73734eabbd18d511c446ae2b1a"
+          }
+        },
+        {
+          "client_id": "228435858532-6ljb9sqk0ega0n83fkl6bqhqok4ig2uh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_1gQBBN_ytzY1ebFIbE72EkriXu3RHRo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "228435858532-6ljb9sqk0ega0n83fkl6bqhqok4ig2uh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "228435858532-nsisrvvoif1o4rqjh780mub4c2q7t04j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ArghyaBandyopadhyay.ikepbuddy"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

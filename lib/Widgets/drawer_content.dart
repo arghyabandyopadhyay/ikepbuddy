@@ -19,7 +19,7 @@ class DrawerContent extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: const [
             Text(
-              "Chronicle",
+              "IKEP Buddy",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               textAlign: TextAlign.start,
             ),

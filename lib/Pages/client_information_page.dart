@@ -1,31 +1,37 @@
-import 'package:ikepbuddy/Formatters/ind_number_text_input_formatter.dart';
-import 'package:ikepbuddy/Models/pair_model.dart';
+import '../Formatters/ind_number_text_input_formatter.dart';
+import '../Models/pair_model.dart';
+import '../Models/modal_option_model.dart';
+import '../Modules/api_module.dart';
+import '../Modules/universal_module.dart';
+import '../Modules/database.dart';
+import '../Widgets/option_modal_bottom_sheet.dart';
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ikepbuddy/Modules/universal_module.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../constants.dart';
+import '../global_class.dart';
 
-class AddPatientPage extends StatefulWidget {
-  final Function(PairModel) callback;
-  const AddPatientPage({Key? key, required this.callback}) : super(key: key);
+class ClientInformationPage extends StatefulWidget {
+  final PairModel pairData;
+  const ClientInformationPage({Key? key, required this.pairData})
+      : super(key: key);
   @override
-  _AddPatientPageState createState() => _AddPatientPageState();
+  _ClientInformationPageState createState() => _ClientInformationPageState();
 }
 
-class _AddPatientPageState extends State<AddPatientPage> {
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+class _ClientInformationPageState extends State<ClientInformationPage> {
+  GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  PairModel pairData = PairModel();
-  DateTime? now, today;
+  late DateTime now, today;
   var phoneNumberTextField = TextEditingController();
   var donorPhoneNumberTextField = TextEditingController();
   var nameTextField = TextEditingController();
   var donorNameTextField = TextEditingController();
   var addressTextField = TextEditingController();
   var donorAddressTextField = TextEditingController();
-  var registrationIdTextField = TextEditingController();
   var kidneyTextField = TextEditingController();
   var donorKidneyTextField = TextEditingController();
   String? sexPatientDropDown;
@@ -60,56 +66,91 @@ class _AddPatientPageState extends State<AddPatientPage> {
   final focus = FocusNode();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   //Functions
-  void _handleSubmitted() {
-    final form = _formKey.currentState;
-    if (!form!.validate()) {
-      // Start validating on every change.
-    } else {
-      form.save();
-      pairData.gender = sexPatientDropDown;
-      pairData.dGender = sexDonorDropDown;
-      pairData.sd = casteDropDown;
-      pairData.h = [];
-      pairData.h!.add(hlaPatient1DropDown!);
-      pairData.h!.add(hlaPatient2DropDown!);
-      pairData.h!.add(hlaPatient3DropDown!);
-      pairData.h!.add(hlaPatient4DropDown!);
-      pairData.h!.add(hlaPatient5DropDown!);
-      pairData.h!.add(hlaPatient6DropDown!);
-      pairData.dH = [];
-      pairData.dH!.add(hlaDonor1DropDown!);
-      pairData.dH!.add(hlaDonor2DropDown!);
-      pairData.dH!.add(hlaDonor3DropDown!);
-      pairData.dH!.add(hlaDonor4DropDown!);
-      pairData.dH!.add(hlaDonor5DropDown!);
-      pairData.h!.add(hlaDonor6DropDown!);
-      // try{
-      // if(pairData.startDate==null)pairData.startDate=today;
-      // int months=int.parse(paymentNumberTextField.text);
-      // months=months.abs();
-      // pairData.endDate = DateTime(pairData.startDate.year,pairData.startDate.month+months,pairData.startDate.day);
-      // globalShowInSnackBar(scaffoldMessengerKey,pairData.toJson());
-      widget.callback(pairData);
-      Navigator.pop(context);
-      // }
-      // catch(E){
-      //   globalShowInSnackBar(scaffoldMessengerKey,E);
-      //   globalShowInSnackBar(scaffoldMessengerKey,"Please Enter No of Payments!!");
-      // }
-      FocusScope.of(context).unfocus();
-    }
-  }
 
   String? _validateName(String? value) {
     if (value!.isEmpty) return "required fields can't be left empty";
     return null;
   }
 
-  //Overrides
+  Future<void> _handleSubmitted() async {
+    final form = _formKey.currentState;
+    if (!form!.validate()) {
+    } else {
+      form.save();
+      showDialog(
+          context: context,
+          builder: (BuildContext context1) {
+            return AlertDialog(
+              title: const Text("Confirm Save"),
+              content: const Text("Are you sure to save changes?"),
+              actions: [
+                ActionChip(
+                    label: const Text("Yes"),
+                    onPressed: () {
+                      Navigator.pop(context1);
+                      widget.pairData.gender = sexPatientDropDown;
+                      widget.pairData.dGender = sexDonorDropDown;
+                      widget.pairData.sd = casteDropDown;
+                      widget.pairData.h = [];
+                      widget.pairData.h!.add(hlaPatient1DropDown!);
+                      widget.pairData.h!.add(hlaPatient2DropDown!);
+                      widget.pairData.h!.add(hlaPatient3DropDown!);
+                      widget.pairData.h!.add(hlaPatient4DropDown!);
+                      widget.pairData.h!.add(hlaPatient5DropDown!);
+                      widget.pairData.h!.add(hlaPatient6DropDown!);
+                      widget.pairData.dH = [];
+                      widget.pairData.dH!.add(hlaDonor1DropDown!);
+                      widget.pairData.dH!.add(hlaDonor2DropDown!);
+                      widget.pairData.dH!.add(hlaDonor3DropDown!);
+                      widget.pairData.dH!.add(hlaDonor4DropDown!);
+                      widget.pairData.dH!.add(hlaDonor5DropDown!);
+                      widget.pairData.h!.add(hlaDonor6DropDown!);
+                      updateClient(widget.pairData, widget.pairData.id!);
+                      changesSavedModule(context, scaffoldMessengerKey);
+                    }),
+                ActionChip(
+                    label: const Text("No"),
+                    onPressed: () {
+                      setState(() {
+                        Navigator.of(context1).pop();
+                      });
+                    })
+              ],
+            );
+          });
+    }
+  }
+
   @override
   void initState() {
     now = DateTime.now();
-    today = DateTime(now!.year, now!.month, now!.day);
+    today = DateTime(now.year, now.month, now.day);
+    phoneNumberTextField.text = widget.pairData.mobileNo ?? "";
+    donorPhoneNumberTextField.text = widget.pairData.dMobileNo ?? "";
+    nameTextField.text = widget.pairData.name ?? "";
+    donorNameTextField.text = widget.pairData.name ?? "";
+    addressTextField.text = (widget.pairData.pin ?? "").toString();
+    donorAddressTextField.text = (widget.pairData.dPin ?? "").toString();
+    kidneyTextField.text = (widget.pairData.k ?? "").toString();
+    donorKidneyTextField.text = (widget.pairData.dK ?? "").toString();
+    sexPatientDropDown = widget.pairData.gender;
+    sexDonorDropDown = widget.pairData.dGender;
+    bloodGroupPatientDropDown = widget.pairData.b;
+    bloodGroupDonorDropDown = widget.pairData.dB;
+    hlaPatient1DropDown = widget.pairData.h![0];
+    hlaPatient2DropDown = widget.pairData.h![1];
+    hlaPatient3DropDown = widget.pairData.h![2];
+    hlaPatient4DropDown = widget.pairData.h![3];
+    hlaPatient5DropDown = widget.pairData.h![4];
+    hlaPatient6DropDown = widget.pairData.h![5];
+    hlaDonor1DropDown = widget.pairData.dH![0];
+    hlaDonor2DropDown = widget.pairData.dH![1];
+    hlaDonor3DropDown = widget.pairData.dH![2];
+    hlaDonor4DropDown = widget.pairData.dH![3];
+    hlaDonor5DropDown = widget.pairData.dH![4];
+    hlaDonor6DropDown = widget.pairData.dH![5];
+    casteDropDown = widget.pairData.sd;
+
     super.initState();
   }
 
@@ -118,9 +159,171 @@ class _AddPatientPageState extends State<AddPatientPage> {
     return ScaffoldMessenger(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            "Register Client",
+          title: Text(
+            widget.pairData.name ?? "Pair Profile",
           ),
+          actions: [
+            PopupMenuButton<ModalOptionModel>(
+              itemBuilder: (BuildContext popupContext) {
+                return [
+                  ModalOptionModel(
+                      particulars: "Call",
+                      icon: Icons.call,
+                      onTap: () {
+                        Navigator.pop(popupContext);
+                        callModule(widget.pairData, scaffoldMessengerKey);
+                      }),
+                  ModalOptionModel(
+                      particulars: "Sms Reminder",
+                      icon: Icons.send,
+                      onTap: () {
+                        Navigator.pop(popupContext);
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (_) => OptionModalBottomSheet(
+                                  appBarIcon: Icons.send,
+                                  appBarText: "How to send the reminder",
+                                  list: [
+                                    ModalOptionModel(
+                                        particulars:
+                                            "Send Sms using Default Sim",
+                                        icon: Icons.sim_card_outlined,
+                                        onTap: () {
+                                          Navigator.of(_).pop();
+                                          showDialog(
+                                              context: context,
+                                              builder: (_) => AlertDialog(
+                                                    title: const Text(
+                                                        "Confirm Send"),
+                                                    content: Text(
+                                                        "Are you sure to send a reminder to ${widget.pairData.name}?"),
+                                                    actions: [
+                                                      ActionChip(
+                                                          label:
+                                                              const Text("Yes"),
+                                                          onPressed: () {
+                                                            smsModule(
+                                                                widget.pairData,
+                                                                scaffoldMessengerKey);
+                                                            Navigator.of(_)
+                                                                .pop();
+                                                          }),
+                                                      ActionChip(
+                                                          label:
+                                                              const Text("No"),
+                                                          onPressed: () {
+                                                            Navigator.of(_)
+                                                                .pop();
+                                                          })
+                                                    ],
+                                                  ));
+                                        }),
+                                    ModalOptionModel(
+                                        particulars:
+                                            "Send Sms using Sms Gateway",
+                                        icon: FontAwesomeIcons.server,
+                                        onTap: () {
+                                          if (GlobalClass.userDetail!
+                                                      .smsAccessToken !=
+                                                  null &&
+                                              GlobalClass.userDetail!.smsApiUrl !=
+                                                  null &&
+                                              GlobalClass.userDetail!.smsUserId !=
+                                                  null &&
+                                              GlobalClass.userDetail!.smsMobileNo !=
+                                                  null &&
+                                              GlobalClass.userDetail!
+                                                      .smsAccessToken !=
+                                                  "" &&
+                                              GlobalClass.userDetail!.smsApiUrl !=
+                                                  "" &&
+                                              GlobalClass
+                                                      .userDetail!.smsUserId !=
+                                                  "" &&
+                                              GlobalClass.userDetail!
+                                                      .smsMobileNo !=
+                                                  "") {
+                                            Navigator.of(_).pop();
+                                            showDialog(
+                                                context: context,
+                                                builder: (_) => AlertDialog(
+                                                      title: const Text(
+                                                          "Confirm Send"),
+                                                      content: Text(
+                                                          "Are you sure to send a reminder to ${widget.pairData.name}?"),
+                                                      actions: [
+                                                        ActionChip(
+                                                            label: const Text(
+                                                                "Yes"),
+                                                            onPressed: () {
+                                                              try {
+                                                                postForBulkMessage(
+                                                                    [
+                                                                      widget
+                                                                          .pairData
+                                                                    ],
+                                                                    "${GlobalClass.userDetail!.reminderMessage != null && GlobalClass.userDetail!.reminderMessage != "" ? GlobalClass.userDetail!.reminderMessage : "Your subscription has come to an end"
+                                                                        ", please clear your dues for further continuation of services."}\npowered by IKEP Buddy Business Solutions");
+                                                                globalShowInSnackBar(
+                                                                    scaffoldMessengerKey,
+                                                                    "Message Sent!!");
+                                                              } catch (E) {
+                                                                globalShowInSnackBar(
+                                                                    scaffoldMessengerKey,
+                                                                    "Something Went Wrong!!");
+                                                              }
+                                                              Navigator.of(_)
+                                                                  .pop();
+                                                            }),
+                                                        ActionChip(
+                                                            label: const Text(
+                                                                "No"),
+                                                            onPressed: () {
+                                                              Navigator.of(_)
+                                                                  .pop();
+                                                            })
+                                                      ],
+                                                    ));
+                                          } else {
+                                            globalShowInSnackBar(
+                                                scaffoldMessengerKey,
+                                                "Please configure Sms Gateway Data in Settings.");
+                                            Navigator.of(_).pop();
+                                          }
+                                        }),
+                                  ],
+                                ));
+                      }),
+                  ModalOptionModel(
+                      particulars: "WhatsApp",
+                      icon: FontAwesomeIcons.whatsappSquare,
+                      onTap: () async {
+                        Navigator.pop(popupContext);
+                        whatsAppModule(widget.pairData, scaffoldMessengerKey);
+                      }),
+                  ModalOptionModel(
+                      particulars: "Delete",
+                      icon: Icons.delete,
+                      onTap: () {
+                        Navigator.pop(popupContext);
+                        deleteModule(widget.pairData, context, this);
+                      }),
+                ].map((ModalOptionModel choice) {
+                  return PopupMenuItem<ModalOptionModel>(
+                    value: choice,
+                    child: ListTile(
+                      title: Text(choice.particulars),
+                      leading: Icon(
+                        choice.icon,
+                        color: choice.iconColor,
+                      ),
+                      onTap: choice.onTap,
+                    ),
+                  );
+                }).toList();
+              },
+            ),
+          ],
         ),
         body: Form(
           key: _formKey,
@@ -170,7 +373,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         ),
                         validator: _validateName,
                         onSaved: (value) {
-                          pairData.name = value;
+                          widget.pairData.name = value;
                         },
                       ),
                     ),
@@ -434,7 +637,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         autovalidateMode: AutovalidateMode.always,
                         onDateSelected: (DateTime value) {
                           Duration diff = value.difference(DateTime.now());
-                          pairData.age = ((diff.inDays) / 365).round();
+                          widget.pairData.age = ((diff.inDays) / 365).round();
                         },
                       ),
                     ),
@@ -465,7 +668,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         ),
                         onSaved: (value) {
                           if (value!.isNotEmpty) {
-                            pairData.k = double.parse(value);
+                            widget.pairData.k = double.parse(value);
                           }
                         },
                       ),
@@ -497,7 +700,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                               bottom: 10.0, left: 10.0, right: 10.0),
                         ),
                         onSaved: (value) {
-                          pairData.pin = value as int?;
+                          widget.pairData.pin = value as int?;
                         },
                       ),
                     ),
@@ -527,7 +730,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         ),
                         keyboardType: TextInputType.phone,
                         onSaved: (value) {
-                          pairData.mobileNo = value;
+                          widget.pairData.mobileNo = value;
                         },
                         validator: _validatePhoneNumber,
                         inputFormatters: <TextInputFormatter>[
@@ -612,7 +815,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         ),
                         validator: _validateName,
                         onSaved: (value) {
-                          pairData.dName = value;
+                          widget.pairData.dName = value;
                         },
                       ),
                     ),
@@ -876,7 +1079,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         autovalidateMode: AutovalidateMode.always,
                         onDateSelected: (DateTime value) {
                           Duration diff = value.difference(DateTime.now());
-                          pairData.dAge = ((diff.inDays) / 365).round();
+                          widget.pairData.dAge = ((diff.inDays) / 365).round();
                         },
                       ),
                     ),
@@ -907,7 +1110,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         ),
                         onSaved: (value) {
                           if (value!.isNotEmpty) {
-                            pairData.dK = double.parse(value);
+                            widget.pairData.dK = double.parse(value);
                           }
                         },
                       ),
@@ -939,7 +1142,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                               bottom: 10.0, left: 10.0, right: 10.0),
                         ),
                         onSaved: (value) {
-                          pairData.dPin = value as int?;
+                          widget.pairData.dPin = value as int?;
                         },
                       ),
                     ),
@@ -969,7 +1172,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         ),
                         keyboardType: TextInputType.phone,
                         onSaved: (value) {
-                          pairData.dMobileNo = value;
+                          widget.pairData.dMobileNo = value;
                         },
                         validator: _validatePhoneNumber,
                         inputFormatters: <TextInputFormatter>[
@@ -1083,16 +1286,36 @@ class _AddPatientPageState extends State<AddPatientPage> {
           ),
         ),
         floatingActionButton: FloatingActionButton.extended(
-          heroTag: "registerClientsAddPatientPageHeroTag",
-          icon: const Icon(Icons.person_add),
-          label: const Text(
-            "Register",
+          heroTag: "saveClientInformationHeroTag",
+          onPressed: () {
+            _handleSubmitted();
+          },
+          label: const Text("Save"),
+          icon: const Icon(
+            Icons.save,
           ),
-          onPressed: _handleSubmitted,
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
       key: scaffoldMessengerKey,
     );
+  }
+
+  Future<PermissionStatus> _getContactPermission() async {
+    return await Permission.contacts.request();
+  }
+
+  void _handleInvalidPermissions(PermissionStatus permissionStatus) {
+    if (permissionStatus == PermissionStatus.denied) {
+      globalShowInSnackBar(scaffoldMessengerKey, "Access Denied by the user!!");
+    } else if (permissionStatus == PermissionStatus.restricted) {
+      globalShowInSnackBar(
+          scaffoldMessengerKey, "Location data is not available on device");
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

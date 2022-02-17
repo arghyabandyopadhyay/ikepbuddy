@@ -1,22 +1,19 @@
 import 'dart:convert';
-import '../Models/CourseModels/courseIndexModel.dart';
-import '../Models/CourseModels/course_model.dart';
-import '../Models/dataModel.dart';
+import 'package:flutter/material.dart';
+
+import '../Models/data_model.dart';
 import '../Models/register_index_model.dart';
-import '../Models/registerModel.dart';
-import '../Models/CourseModels/videoIndexModel.dart';
 import '../Models/token_model.dart';
 import '../Modules/universal_module.dart';
 import '../../global_class.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
 import '../Models/pair_model.dart';
 import '../Models/user_model.dart';
 import 'auth.dart';
 
 FirebaseDatabase database = FirebaseDatabase.instance;
-final databaseReference = database.reference();
+final databaseReference = database.ref();
 // void initiateDatabase(){
 //   database.setPersistenceEnabled(true);
 //   database.setPersistenceCacheSizeBytes(100000000);
@@ -103,17 +100,19 @@ void updateClient(PairModel client, DatabaseReference id) {
 }
 
 ///gets the list of clients in a register.
-Future<List<PairModel>> getAllClients(String registerId) async {
+Future<List<PairModel>> getAllClients(String hospitalUID) async {
   DatabaseEvent databaseEvent = await databaseReference
-      .child('${GlobalClass.user!.uid}/registers/$registerId/client/')
+      .child('${GlobalClass.user!.uid}/registers/$hospitalUID/client/')
       .once();
   DataSnapshot dataSnapshot = databaseEvent.snapshot;
   List<PairModel> clients = [];
   if (dataSnapshot.value != null) {
-    dataSnapshot.value!.forEach((key, value) {
+    Map<String, dynamic> snapshotVal =
+        dataSnapshot.value as Map<String, dynamic>;
+    snapshotVal.forEach((key, value) {
       PairModel client = PairModel.fromJson(jsonDecode(jsonEncode(value)));
       client.setId(databaseReference.child(
-          '${GlobalClass.user!.uid}/registers/$registerId/client/' + key));
+          '${GlobalClass.user!.uid}/registers/$hospitalUID/client/' + key));
       clients.add(client);
     });
   }
@@ -129,34 +128,15 @@ Future<List<PairModel>> getNotificationClients(BuildContext context) async {
     await addUserDetail().then((value) async => {
           if (value != null)
             {
-              await getAllRegisters().then((registers) => {
-                    registers.forEach((registerElement) {
-                      registerElement.clients.forEach((clientElement) async {
-                        DateTime now = DateTime.now();
-                        DateTime today = DateTime(now.year, now.month, now.day);
-                        int a = clientElement.endDate.difference(today).inDays;
-                        if ((a >= -1 && a <= 2) && clientElement.due >= 0) {
+              await getAllClients(GlobalClass.user!.uid)
+                  .then((clientInstances) => {
+                        clientInstances.forEach((clientElement) async {
                           clients.add(clientElement);
-                        }
-                      });
-                    })
-                  })
+                        })
+                      })
             }
         });
   }
-  // List<RegisterModel> registers=await getAllRegisters();
-  // List<PairModel> clients = [];
-  // registers.forEach((registerElement)  {
-  //   registerElement.clients.forEach((clientElement) async{
-  //     DateTime now=DateTime.now();
-  //     DateTime today=DateTime(now.year,now.month,now.day);
-  //     int a=clientElement.endDate.difference(today).inDays;
-  //     if((a>=-1&&a<=2)&&clientElement.due>=0)
-  //     {
-  //       clients.add(clientElement);
-  //     }
-  //   });
-  // });
   return clients;
 }
 
@@ -211,13 +191,15 @@ Future<List<PairModel>> getNotificationClients(BuildContext context) async {
 ///gets the details of the user.
 Future<UserModel?> getUserDetails() async {
   DatabaseReference userDetailReference =
-      databaseReference.child('${GlobalClass.user.uid}/userDetails/');
+      databaseReference.child('${GlobalClass.user!.uid}/userDetails/');
   // userDetailReference.keepSynced(true);
   DatabaseEvent databaseEvent = await userDetailReference.once();
   DataSnapshot dataSnapshot = databaseEvent.snapshot;
   UserModel? userDetail;
   if (dataSnapshot.value != null) {
-    dataSnapshot.value.forEach((key, value) {
+    Map<String, dynamic> snapshotVal =
+        dataSnapshot.value as Map<String, dynamic>;
+    snapshotVal.forEach((key, value) {
       userDetail = UserModel.fromJson(jsonDecode(jsonEncode(value)), key);
       userDetail!.setId(databaseReference
           .child('${GlobalClass.user!.uid}/userDetails/' + key));

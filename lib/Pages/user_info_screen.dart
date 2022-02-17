@@ -2,8 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:qr_code_tools/qr_code_tools.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
+// import 'package:qr_code_tools/qr_code_tools.dart';
 import 'dart:async';
 
 import '../Models/pair_model.dart';
@@ -11,27 +10,19 @@ import '../Models/modal_option_model.dart';
 import '../Models/user_model.dart';
 import '../Modules/database.dart';
 import '../Modules/universal_module.dart';
-import '../OwnerModules/clientAccessEditPage.dart';
-import '../OwnerModules/dispatchNotificationConsole.dart';
-import '../Pages/helpAndFeedbackPage.dart';
-import '../Pages/settings_page.dart';
-import '../PdfModule/api/pdfInvoiceApi.dart';
-import '../PdfModule/model/invoice.dart';
-import '../PdfModule/model/supplier.dart';
-import '../TutorPages/qrCodePage.dart';
+import '../Pages/help_and_feedback_page.dart';
 import '../Modules/auth.dart';
 import '../app_bar_variables.dart';
 import '../custom_colors.dart';
 import 'notifications_page.dart';
+import 'qr_code_page.dart';
 import 'routing_page.dart';
 import '../global_class.dart';
+import 'settings_page.dart';
 
 class UserInfoScreen extends StatefulWidget {
   final BuildContext mainScreenContext;
-  final bool hideStatus;
-  final GlobalKey<ScaffoldState> scaffoldKey;
-  const UserInfoScreen(
-      {Key key, this.mainScreenContext, this.hideStatus, this.scaffoldKey})
+  const UserInfoScreen({Key? key, required this.mainScreenContext})
       : super(key: key);
 
   @override
@@ -42,14 +33,13 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   bool _isSigningOut = false;
   bool isBackupOn = false;
   double progressValue = 0.0;
-  Razorpay razorpay;
   GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   Route _routeToRoutingPage() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => RoutingPage(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = Offset(-1.0, 0.0);
+        var begin = const Offset(-1.0, 0.0);
         var end = Offset.zero;
         var curve = Curves.ease;
 
@@ -67,81 +57,11 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   @override
   void initState() {
     super.initState();
-    razorpay = new Razorpay();
-
-    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlerPaymentSuccess);
-    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlerErrorFailure);
-    razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handlerExternalWallet);
-  }
-
-  void openCheckout() {
-    var options = {
-      "key": "rzp_test_q6cu1m0YjMEw86",
-      "amount": GlobalClass.userDetail.yearlyPaymentPrice * 100,
-      "name": "Chronicle",
-      "description": "Chronicle yearly payment",
-      "prefill": {"email": GlobalClass.userDetail.email},
-      "external": {
-        "wallets": ["paytm"]
-      }
-    };
-    try {
-      razorpay.open(options);
-    } catch (e) {
-      debugPrint('Error: e');
-    }
   }
 
   @override
   void dispose() {
     super.dispose();
-    razorpay.clear();
-  }
-
-  Future<void> handlerPaymentSuccess(PaymentSuccessResponse response) async {
-    globalShowInSnackBar(
-        scaffoldMessengerKey, "SUCCESS: " + response.paymentId);
-    final date = DateTime.now();
-
-    final invoice = Invoice(
-      title: "Chronicle Yearly Payment ${DateTime.now().year}",
-      supplier: Supplier(
-        name: 'Chronicle Business Solutions',
-        address: 'Smriti nagar, Bhilai',
-        email: 'chroniclebusinesssolutions@gmail.com',
-      ),
-      customer: ClientModel(
-        name: GlobalClass.userDetail.displayName,
-        mobileNo: GlobalClass.userDetail.email,
-      ),
-      info: InvoiceInfo(
-        date: date,
-        remarks: 'My description...',
-        number: '${DateTime.now().year}-9999',
-      ),
-      items: [
-        InvoiceItem(
-          description: 'Coffee',
-          quantity: 3,
-          gst: 0.19,
-          unitPrice: 5.99,
-        ),
-      ],
-    );
-
-    final pdfFile = await PdfInvoiceApi.generate(invoice);
-    sendRegisterAppEmail(scaffoldMessengerKey, pdfFile);
-    // PdfApi.openFile(pdfFile);
-  }
-
-  void handlerErrorFailure(PaymentFailureResponse response) {
-    globalShowInSnackBar(scaffoldMessengerKey,
-        "ERROR: " + response.code.toString() + " - " + response.message);
-  }
-
-  void handlerExternalWallet(ExternalWalletResponse response) {
-    globalShowInSnackBar(
-        scaffoldMessengerKey, "EXTERNAL_WALLET: " + response.walletName);
   }
 
   @override
@@ -149,7 +69,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     return ScaffoldMessenger(
         child: Scaffold(
           appBar: AppBar(
-            // leading: IconButton(icon:Icon(Icons.menu),onPressed: (){widget.scaffoldKey.currentState.openDrawer();},),
             title: AppBarVariables.appBarLeading(widget.mainScreenContext),
             bottom: PreferredSize(
               child: (isBackupOn)
@@ -157,70 +76,66 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                       value: progressValue,
                       minHeight: 2,
                     )
-                  : Container(width: 0.0, height: 0.0),
-              preferredSize: Size(double.infinity, 2),
+                  : const SizedBox(width: 0.0, height: 0.0),
+              preferredSize: const Size(double.infinity, 2),
             ),
             actions: [
-              if (GlobalClass.userDetail.isAppRegistered == 1)
-                new IconButton(
-                    icon: Icon(Icons.notifications_outlined),
+              if (GlobalClass.userDetail!.isAppRegistered == 1)
+                IconButton(
+                    icon: const Icon(Icons.notifications_outlined),
                     onPressed: () {
                       setState(() {
                         Navigator.of(widget.mainScreenContext).push(
                             CupertinoPageRoute(
                                 builder: (notificationPageContext) =>
-                                    NotificationsPage()));
+                                    const NotificationsPage()));
                       });
                     }),
               PopupMenuButton<ModalOptionModel>(
                 itemBuilder: (BuildContext popupContext) {
                   return [
-                    if (GlobalClass.userDetail.isAppRegistered == 1 &&
-                        GlobalClass.userDetail.canAccess == 0)
+                    if (GlobalClass.userDetail!.isAppRegistered == 1 &&
+                        GlobalClass.userDetail!.canAccess == 0)
                       ModalOptionModel(
-                          particulars: "Yearly Subscription Payment",
-                          icon: Icons.payment_outlined,
-                          onTap: () {
+                          particulars: "My Qr Code",
+                          icon: Icons.qr_code_outlined,
+                          onTap: () async {
                             Navigator.pop(popupContext);
-                            openCheckout();
-                          }),
-                    ModalOptionModel(
-                        particulars: "My Qr Code",
-                        icon: Icons.qr_code_outlined,
-                        onTap: () async {
-                          Navigator.pop(popupContext);
-                          UserModel userModel = await getUserDetails();
-                          if (userModel.qrcodeDetail != null) {
-                            Navigator.of(widget.mainScreenContext).push(
-                                new CupertinoPageRoute(
-                                    builder: (qrCodePageContext) => QrCodePage(
-                                        qrCode: userModel.qrcodeDetail)));
-                          } else {
-                            String _data = '';
-                            try {
-                              final pickedFile = await ImagePicker().getImage(
-                                source: ImageSource.gallery,
-                                maxWidth: 300,
-                                maxHeight: 300,
-                                imageQuality: 30,
-                              );
-                              setState(() {
-                                QrCodeToolsPlugin.decodeFrom(pickedFile.path)
-                                    .then((value) {
-                                  _data = value;
-                                  userModel.qrcodeDetail = _data;
-                                  userModel.update();
+                            UserModel? userModel = await getUserDetails();
+                            if (userModel != null &&
+                                userModel.qrcodeDetail != null) {
+                              Navigator.of(widget.mainScreenContext).push(
+                                  CupertinoPageRoute(
+                                      builder: (qrCodePageContext) =>
+                                          QrCodePage(
+                                              qrCode:
+                                                  userModel.qrcodeDetail!)));
+                            } else if (userModel != null) {
+                              String _data = '';
+                              try {
+                                final pickedFile = await ImagePicker().getImage(
+                                  source: ImageSource.gallery,
+                                  maxWidth: 300,
+                                  maxHeight: 300,
+                                  imageQuality: 30,
+                                );
+                                setState(() {
+                                  // QrCodeToolsPlugin.decodeFrom(pickedFile!.path)
+                                  //     .then((value) {
+                                  //   _data = value;
+                                  //   userModel.qrcodeDetail = _data;
+                                  //   userModel.update();
+                                  // });
                                 });
-                              });
-                            } catch (e) {
-                              globalShowInSnackBar(
-                                  scaffoldMessengerKey, "Invalid File!!");
-                              setState(() {
-                                _data = '';
-                              });
+                              } catch (e) {
+                                globalShowInSnackBar(
+                                    scaffoldMessengerKey, "Invalid File!!");
+                                setState(() {
+                                  _data = '';
+                                });
+                              }
                             }
-                          }
-                        }),
+                          }),
                     ModalOptionModel(
                         particulars: "Help and Feedback",
                         icon: Icons.help_outline,
@@ -229,7 +144,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                           Navigator.of(widget.mainScreenContext).push(
                               CupertinoPageRoute(
                                   builder: (settingsContext) =>
-                                      HelpAndFeedbackPage()));
+                                      const HelpAndFeedbackPage()));
                         }),
                     ModalOptionModel(
                         particulars: "Settings",
@@ -239,63 +154,36 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                           Navigator.of(widget.mainScreenContext).push(
                               CupertinoPageRoute(
                                   builder: (settingsContext) =>
-                                      SettingsPage()));
+                                      const SettingsPage()));
                         }),
-                    ModalOptionModel(
-                        particulars: "Backup Data",
-                        icon: Icons.cloud_download_outlined,
-                        onTap: () async {
-                          Navigator.pop(popupContext);
-                          progressValue = 0;
-                          setState(() {
-                            isBackupOn = true;
-                          });
-                          await backupModule(scaffoldMessengerKey,
-                              (double val) {
-                            setState(() {
-                              progressValue = val;
-                            });
-                          });
-                          setState(() {
-                            isBackupOn = false;
-                          });
-                          //add code for showing progress
-                        }),
-                    ModalOptionModel(
-                        particulars: "Upload Backup Data",
-                        icon: Icons.cloud_upload_outlined,
-                        onTap: () async {
-                          Navigator.pop(popupContext);
-                          uploadBackupModule(scaffoldMessengerKey);
-                        }),
-                    if (GlobalClass.user != null &&
-                        GlobalClass.userDetail != null &&
-                        GlobalClass.userDetail.isOwner == 1)
-                      ModalOptionModel(
-                        particulars: "Dispatch Notification",
-                        icon: Icons.send,
-                        onTap: () async {
-                          Navigator.of(popupContext).pop();
-                          Navigator.of(widget.mainScreenContext).push(
-                              CupertinoPageRoute(
-                                  builder: (context) =>
-                                      DispatchNotificationConsole()));
-                        },
-                      ),
-                    if (GlobalClass.user != null &&
-                        GlobalClass.userDetail != null &&
-                        GlobalClass.userDetail.isOwner == 1)
-                      ModalOptionModel(
-                        particulars: "Users Access",
-                        icon: Icons.account_box_outlined,
-                        onTap: () async {
-                          Navigator.of(context).pop();
-                          Navigator.of(widget.mainScreenContext).push(
-                              CupertinoPageRoute(
-                                  builder: (context) =>
-                                      ClientAccessEditPage()));
-                        },
-                      ),
+                    // if (GlobalClass.user != null &&
+                    //     GlobalClass.userDetail != null &&
+                    //     GlobalClass.userDetail!.isOwner == 1)
+                    //   ModalOptionModel(
+                    //     particulars: "Dispatch Notification",
+                    //     icon: Icons.send,
+                    //     onTap: () async {
+                    //       Navigator.of(popupContext).pop();
+                    //       Navigator.of(widget.mainScreenContext).push(
+                    //           CupertinoPageRoute(
+                    //               builder: (context) =>
+                    //                   DispatchNotificationConsole()));
+                    //     },
+                    //   ),
+                    // if (GlobalClass.user != null &&
+                    //     GlobalClass.userDetail! != null &&
+                    //     GlobalClass.userDetail!.isOwner == 1)
+                    //   ModalOptionModel(
+                    //     particulars: "Users Access",
+                    //     icon: Icons.account_box_outlined,
+                    //     onTap: () async {
+                    //       Navigator.of(context).pop();
+                    //       Navigator.of(widget.mainScreenContext).push(
+                    //           CupertinoPageRoute(
+                    //               builder: (context) =>
+                    //                   ClientAccessEditPage()));
+                    //     },
+                    //   ),
                   ].map((ModalOptionModel choice) {
                     return PopupMenuItem<ModalOptionModel>(
                       value: choice,
@@ -318,16 +206,16 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                 bottom: 20.0,
               ),
               children: [
-                SizedBox(height: 50.0),
+                const SizedBox(height: 50.0),
                 CircleAvatar(
                   radius: 60,
                   backgroundColor: Colors.transparent,
-                  child: GlobalClass.user.photoURL != null
+                  child: GlobalClass.user!.photoURL != null
                       ? ClipOval(
                           child: Material(
                             color: CustomColors.firebaseGrey.withOpacity(0.3),
                             child: Image.network(
-                              GlobalClass.user.photoURL,
+                              GlobalClass.user!.photoURL!,
                               fit: BoxFit.fitHeight,
                             ),
                           ),
@@ -335,8 +223,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                       : ClipOval(
                           child: Material(
                             color: CustomColors.firebaseGrey.withOpacity(0.3),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
+                            child: const Padding(
+                              padding: EdgeInsets.all(16.0),
                               child: Icon(
                                 Icons.person,
                                 size: 60,
@@ -346,44 +234,26 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                           ),
                         ),
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 Text(
-                  GlobalClass.user.displayName,
+                  GlobalClass.user!.displayName!,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 26,
                   ),
                 ),
-                SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
                 Text(
-                  '${GlobalClass.user.email}',
+                  '${GlobalClass.user!.email}',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                     letterSpacing: 0.5,
                   ),
                 ),
-                SizedBox(height: 16.0),
-                if (GlobalClass.userDetail.isAppRegistered == 0)
-                  GestureDetector(
-                    onTap: () {
-                      openCheckout();
-                    },
-                    child: Container(
-                      color: Colors.transparent,
-                      child: Text(
-                        'Become an Instructor',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.blueAccent,
-                            fontSize: 20,
-                            letterSpacing: 0.2),
-                      ),
-                    ),
-                  ),
-                SizedBox(height: 24.0),
+                const SizedBox(height: 24.0),
                 _isSigningOut
-                    ? CircularProgressIndicator(
+                    ? const CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       )
                     : GestureDetector(
@@ -391,7 +261,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                           setState(() {
                             _isSigningOut = true;
                           });
-                          await Authentication.signOut(context: context);
+                          await Authentication.signOut(context);
                           setState(() {
                             _isSigningOut = false;
                           });
@@ -402,7 +272,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                         },
                         child: Container(
                           color: Colors.transparent,
-                          child: Text(
+                          child: const Text(
                             'Sign out',
                             textAlign: TextAlign.center,
                             style: TextStyle(
