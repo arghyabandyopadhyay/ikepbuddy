@@ -97,8 +97,8 @@ class PairModel {
         "DAge": dAge,
         "KidneySize": k,
         "DKidneySize": dK,
-        "Hla": h.toString(),
-        "DHla": dH.toString(),
+        "Hla": h,
+        "DHla": dH,
         "HospitalUID": hospitalUID,
         "MasterFilter": masterFilter,
       };
@@ -131,21 +131,20 @@ class PairModel {
         gender: json1['Gender'],
         dGender: json1['DGender'],
         sd: json1['SocietalDist'],
-        h: json1['Hla'] != null ? json1['Hla'].toString().split(',') : [],
+        h: json1['Hla'].map<String>((item) => item.toString()).toList(),
         sPref: json1['SdPref'] != null
             ? json1['SdPref'].toString().split(',')
             : [],
-        dH: json1['DHla'] != null ? json1['DHla'].toString().split(',') : [],
-        age: json1['Age'] != null ? int.parse(json1['Age']) : null,
-        dAge: json1['DAge'] != null ? int.parse(json1['DAge']) : null,
+        dH: json1['DHla'].map<String>((item) => item.toString()).toList(),
+        age: json1['Age'] ?? 0,
+        dAge: json1['DAge'] ?? 0,
         k: json1['KidneySize'] != null
-            ? double.parse(json1['kidneySize'].toString())
-            : null,
+            ? double.parse(json1['KidneySize'].toString())
+            : 0.0,
         dK: json1['DKidneySize'] != null
-            ? double.parse(json1['dKidneySize'].toString())
-            : null,
-        priority:
-            json1['Priority'] != null ? int.parse(json1['Priority']) : null,
+            ? double.parse(json1['DKidneySize'].toString())
+            : 0.0,
+        priority: json1['Priority'] ?? 0,
         masterFilter: masterFilter);
   }
   PairModel copyClient() {

@@ -64,7 +64,7 @@ class UserModel {
           TokenModel tokenModel =
               TokenModel.fromJson(jsonDecode(jsonEncode(jsonList[key])));
           tokenModel.setId(databaseReference.child(
-              '${GlobalClass.user?.uid}/userDetails/$idKey/Tokens/' + key));
+              '${GlobalClass.user?.uid}/hospitalDetails/$idKey/Tokens/' + key));
           tokenList.add(tokenModel);
         });
       }
@@ -76,7 +76,7 @@ class UserModel {
         email: json1['Email'],
         phoneNumber: json1['PhoneNumber'],
         canAccess: json1['CanAccess'],
-        isOwner: json1['IsOwner'] != null ? json1['IsOwner'] : 0,
+        isOwner: json1['IsOwner'] ?? 0,
         smsApiUrl: json1['SmsApiUrl'],
         smsMobileNo: json1['SmsMobileNo'],
         smsUserId:
@@ -94,16 +94,10 @@ class UserModel {
         termsAndConditions: json1['TermsAndConditions'],
         organizationName: json1['OrganizationName'],
         organizationAddress: json1['OrganizationAddress'],
-        cloudStorageSize:
-            json1['CloudStorageSize'] != null ? json1['CloudStorageSize'] : 0,
-        cloudStorageSizeLimit: json1['CloudStorageSizeLimit'] != null
-            ? json1['CloudStorageSizeLimit']
-            : 10000000000,
-        yearlyPaymentPrice: json1['YearlyPaymentPrice'] != null
-            ? json1['YearlyPaymentPrice']
-            : 1000,
-        isAppRegistered:
-            json1['IsAppRegistered'] != null ? json1['IsAppRegistered'] : 0);
+        cloudStorageSize: json1['CloudStorageSize'] ?? 0,
+        cloudStorageSizeLimit: json1['CloudStorageSizeLimit'] ?? 10000000000,
+        yearlyPaymentPrice: json1['YearlyPaymentPrice'] ?? 1000,
+        isAppRegistered: json1['IsAppRegistered'] ?? 0);
   }
   void setId(DatabaseReference id) {
     this.id = id;

@@ -3,8 +3,9 @@ import 'package:ikepbuddy/Models/pair_model.dart';
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ikepbuddy/Modules/universal_module.dart';
+import 'package:ikepbuddy/global_class.dart';
 
+import '../Modules/validator.dart';
 import '../constants.dart';
 
 class AddPatientPage extends StatefulWidget {
@@ -47,15 +48,6 @@ class _AddPatientPageState extends State<AddPatientPage> {
   String? casteDropDown;
   final IndNumberTextInputFormatter _phoneNumberFormatter =
       IndNumberTextInputFormatter();
-  String? _validatePhoneNumber(String? value) {
-    final phoneExp = RegExp(r'^\d\d\d\d\d\ \d\d\d\d\d$');
-    if (value!.isNotEmpty && !phoneExp.hasMatch(value)) {
-      return "Wrong Mobile No.!";
-    } else if (value.isEmpty) {
-      phoneNumberTextField.text = "";
-    }
-    return null;
-  }
 
   final focus = FocusNode();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -69,6 +61,8 @@ class _AddPatientPageState extends State<AddPatientPage> {
       pairData.gender = sexPatientDropDown;
       pairData.dGender = sexDonorDropDown;
       pairData.sd = casteDropDown;
+      pairData.b = bloodGroupPatientDropDown;
+      pairData.dB = bloodGroupDonorDropDown;
       pairData.h = [];
       pairData.h!.add(hlaPatient1DropDown!);
       pairData.h!.add(hlaPatient2DropDown!);
@@ -82,7 +76,9 @@ class _AddPatientPageState extends State<AddPatientPage> {
       pairData.dH!.add(hlaDonor3DropDown!);
       pairData.dH!.add(hlaDonor4DropDown!);
       pairData.dH!.add(hlaDonor5DropDown!);
-      pairData.h!.add(hlaDonor6DropDown!);
+      pairData.dH!.add(hlaDonor6DropDown!);
+      pairData.hospitalUID = GlobalClass.user!.uid;
+      pairData.priority = 0;
       // try{
       // if(pairData.startDate==null)pairData.startDate=today;
       // int months=int.parse(paymentNumberTextField.text);
@@ -90,7 +86,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
       // pairData.endDate = DateTime(pairData.startDate.year,pairData.startDate.month+months,pairData.startDate.day);
       // globalShowInSnackBar(scaffoldMessengerKey,pairData.toJson());
       widget.callback(pairData);
-      Navigator.pop(context);
+      // Navigator.pop(context);
       // }
       // catch(E){
       //   globalShowInSnackBar(scaffoldMessengerKey,E);
@@ -98,11 +94,6 @@ class _AddPatientPageState extends State<AddPatientPage> {
       // }
       FocusScope.of(context).unfocus();
     }
-  }
-
-  String? _validateName(String? value) {
-    if (value!.isEmpty) return "required fields can't be left empty";
-    return null;
   }
 
   //Overrides
@@ -168,7 +159,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                           contentPadding: EdgeInsets.only(
                               bottom: 10.0, left: 10.0, right: 10.0),
                         ),
-                        validator: _validateName,
+                        validator: validateName,
                         onSaved: (value) {
                           pairData.name = value;
                         },
@@ -497,7 +488,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                               bottom: 10.0, left: 10.0, right: 10.0),
                         ),
                         onSaved: (value) {
-                          pairData.pin = value as int?;
+                          pairData.pin = int.parse(value ?? "0");
                         },
                       ),
                     ),
@@ -529,7 +520,10 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         onSaved: (value) {
                           pairData.mobileNo = value;
                         },
-                        validator: _validatePhoneNumber,
+                        validator: (value) {
+                          return validatePhoneNumber(
+                              value, phoneNumberTextField);
+                        },
                         inputFormatters: <TextInputFormatter>[
                           FilteringTextInputFormatter.digitsOnly,
                           // Fit the validating format.
@@ -610,7 +604,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                           contentPadding: EdgeInsets.only(
                               bottom: 10.0, left: 10.0, right: 10.0),
                         ),
-                        validator: _validateName,
+                        validator: validateName,
                         onSaved: (value) {
                           pairData.dName = value;
                         },
@@ -939,7 +933,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                               bottom: 10.0, left: 10.0, right: 10.0),
                         ),
                         onSaved: (value) {
-                          pairData.dPin = value as int?;
+                          pairData.dPin = int.parse(value ?? "0");
                         },
                       ),
                     ),
@@ -971,7 +965,10 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         onSaved: (value) {
                           pairData.dMobileNo = value;
                         },
-                        validator: _validatePhoneNumber,
+                        validator: (value) {
+                          return validatePhoneNumber(
+                              value, donorPhoneNumberTextField);
+                        },
                         inputFormatters: <TextInputFormatter>[
                           FilteringTextInputFormatter.digitsOnly,
                           // Fit the validating format.

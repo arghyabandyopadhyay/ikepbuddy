@@ -1,4 +1,4 @@
-import '../Models/RequestJson/ApiHeaderModel.dart';
+import '../Models/RequestJson/api_header_model.dart';
 import '../Models/pair_model.dart';
 import 'universal_module.dart';
 import '../../global_class.dart';

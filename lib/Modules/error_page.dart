@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class ErrorPageNoInternet extends StatelessWidget {
   const ErrorPageNoInternet({Key? key}) : super(key: key);
@@ -13,10 +11,10 @@ class ErrorPageNoInternet extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Image.asset("assets/NoInternetError.webp"),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
-          Text(
+          const Text(
             "Please connect to the Internet!!",
             textAlign: TextAlign.center,
             textScaleFactor: 1,
@@ -35,16 +33,16 @@ class NoDataError extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
-          margin: EdgeInsets.all(50),
-          padding: EdgeInsets.symmetric(horizontal: 2),
+          margin: const EdgeInsets.all(50),
+          padding: const EdgeInsets.symmetric(horizontal: 2),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Image.asset("assets/noData.jpg"),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              Text(
+              const Text(
                 "No Data Found!!",
                 textAlign: TextAlign.center,
                 textScaleFactor: 1,
@@ -63,16 +61,16 @@ class ErrorHasOccurred extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
-          margin: EdgeInsets.all(50),
-          padding: EdgeInsets.symmetric(horizontal: 2),
+          margin: const EdgeInsets.all(50),
+          padding: const EdgeInsets.symmetric(horizontal: 2),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Image.asset("assets/errorHasOccured.jpg"),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              Text(
+              const Text(
                 "An Error Has Occurred!!",
                 textAlign: TextAlign.center,
                 textScaleFactor: 1,

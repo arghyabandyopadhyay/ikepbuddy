@@ -1,7 +1,5 @@
 import '../Modules/universal_module.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../Modules/database.dart';
 import 'package:image_picker/image_picker.dart';
 // import 'package:qr_code_tools/qr_code_tools.dart';
 import 'package:qr_flutter/qr_flutter.dart';

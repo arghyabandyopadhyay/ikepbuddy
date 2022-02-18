@@ -19,7 +19,7 @@ class LoginPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             width: 121.44,
             height: 59.56,
             child: Column(
@@ -92,7 +92,7 @@ class LoginPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 50),
-          Container(
+          SizedBox(
             width: screenWidth * 0.9,
             height: 86,
             child: Column(
@@ -111,7 +111,7 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 0),
+                const SizedBox(height: 0),
                 Container(
                   height: 55.10,
                   decoration: BoxDecoration(
@@ -126,9 +126,9 @@ class LoginPage extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 50),
+          const SizedBox(height: 50),
           GestureDetector(
-            child: Container(
+            child: SizedBox(
               width: 199.82,
               height: 54.38,
               child: Row(
@@ -179,7 +179,7 @@ class LoginPage extends StatelessWidget {
                 )),
           ),
           const SizedBox(height: 5),
-          Container(
+          SizedBox(
             height: 12.95,
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -219,7 +219,7 @@ class LoginPage extends StatelessWidget {
           Expanded(
             child: Container(),
           ),
-          Container(
+          SizedBox(
             width: screenWidth * 0.8,
             height: 34.96,
             child: Column(
@@ -258,7 +258,7 @@ class LoginPage extends StatelessWidget {
                   onTap: () => Navigator.push(
                       context,
                       CupertinoPageRoute(
-                        builder: (_) => SigninPage(),
+                        builder: (_) => const SigninPage(),
                       )),
                 ),
               ],

@@ -103,7 +103,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
     super.dispose();
   }
 
-  Future<Null> refreshData() async {
+  Future<void> refreshData() async {
     try {
       if (_isSearching) _handleSearchEnd();
       Connectivity connectivity = Connectivity();
@@ -117,7 +117,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       this.clients = clients;
                       _counter++;
                       _isLoading = false;
-                      appBarTitle = Text(
+                      appBarTitle = const Text(
                         "Notifications",
                       );
                     })
@@ -176,8 +176,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         onChanged: searchOperation,
                       );
                       _handleSearchStart();
-                    } else
+                    } else {
                       _handleSearchEnd();
+                    }
                   });
                 }),
             PopupMenuButton<ModalOptionModel>(
@@ -239,7 +240,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                                                 .pop();
                                                           }),
                                                       ActionChip(
-                                                          label: Text("No"),
+                                                          label:
+                                                              const Text("No"),
                                                           onPressed: () {
                                                             Navigator.of(_)
                                                                 .pop();
@@ -302,7 +304,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                                                   .pop();
                                                             }),
                                                         ActionChip(
-                                                            label: Text("No"),
+                                                            label: const Text(
+                                                                "No"),
                                                             onPressed: () {
                                                               Navigator.of(_)
                                                                   .pop();
@@ -482,12 +485,13 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                       showDialog(
                                           context: context,
                                           builder: (_) => AlertDialog(
-                                                title: Text("Confirm Delete"),
+                                                title: const Text(
+                                                    "Confirm Delete"),
                                                 content: Text(
                                                     "Are you sure to delete ${searchResult[index].name}?"),
                                                 actions: [
                                                   ActionChip(
-                                                      label: Text("Yes"),
+                                                      label: const Text("Yes"),
                                                       onPressed: () {
                                                         setState(() {
                                                           deleteDatabaseNode(
@@ -526,8 +530,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                           .then((value) {
                                         setState(() {
                                           if (value == null) {
-                                          } else
+                                          } else {
                                             clients!.remove(clients![index]);
+                                          }
                                         });
                                       });
                                     },
@@ -547,7 +552,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                                     "Are you sure to delete ${clients![index].name}?"),
                                                 actions: [
                                                   ActionChip(
-                                                      label: Text("Yes"),
+                                                      label: const Text("Yes"),
                                                       onPressed: () {
                                                         setState(() {
                                                           deleteDatabaseNode(
@@ -559,7 +564,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                                         });
                                                       }),
                                                   ActionChip(
-                                                      label: Text("No"),
+                                                      label: const Text("No"),
                                                       onPressed: () {
                                                         setState(() {
                                                           Navigator.of(_).pop();

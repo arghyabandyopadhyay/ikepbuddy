@@ -4,6 +4,7 @@ import '../Models/modal_option_model.dart';
 import '../Modules/api_module.dart';
 import '../Modules/universal_module.dart';
 import '../Modules/database.dart';
+import '../Modules/validator.dart';
 import '../Widgets/option_modal_bottom_sheet.dart';
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
@@ -53,24 +54,10 @@ class _ClientInformationPageState extends State<ClientInformationPage> {
   String? casteDropDown;
   final IndNumberTextInputFormatter _phoneNumberFormatter =
       IndNumberTextInputFormatter();
-  String? _validatePhoneNumber(String? value) {
-    final phoneExp = RegExp(r'^\d\d\d\d\d\ \d\d\d\d\d$');
-    if (value!.isNotEmpty && !phoneExp.hasMatch(value)) {
-      return "Wrong Mobile No.!";
-    } else if (value.isEmpty) {
-      phoneNumberTextField.text = "";
-    }
-    return null;
-  }
 
   final focus = FocusNode();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   //Functions
-
-  String? _validateName(String? value) {
-    if (value!.isEmpty) return "required fields can't be left empty";
-    return null;
-  }
 
   Future<void> _handleSubmitted() async {
     final form = _formKey.currentState;
@@ -91,6 +78,8 @@ class _ClientInformationPageState extends State<ClientInformationPage> {
                       widget.pairData.gender = sexPatientDropDown;
                       widget.pairData.dGender = sexDonorDropDown;
                       widget.pairData.sd = casteDropDown;
+                      widget.pairData.b = bloodGroupPatientDropDown;
+                      widget.pairData.dB = bloodGroupDonorDropDown;
                       widget.pairData.h = [];
                       widget.pairData.h!.add(hlaPatient1DropDown!);
                       widget.pairData.h!.add(hlaPatient2DropDown!);
@@ -104,7 +93,8 @@ class _ClientInformationPageState extends State<ClientInformationPage> {
                       widget.pairData.dH!.add(hlaDonor3DropDown!);
                       widget.pairData.dH!.add(hlaDonor4DropDown!);
                       widget.pairData.dH!.add(hlaDonor5DropDown!);
-                      widget.pairData.h!.add(hlaDonor6DropDown!);
+                      widget.pairData.dH!.add(hlaDonor6DropDown!);
+                      widget.pairData.hospitalUID = GlobalClass.user!.uid;
                       updateClient(widget.pairData, widget.pairData.id!);
                       changesSavedModule(context, scaffoldMessengerKey);
                     }),
@@ -371,7 +361,7 @@ class _ClientInformationPageState extends State<ClientInformationPage> {
                           contentPadding: EdgeInsets.only(
                               bottom: 10.0, left: 10.0, right: 10.0),
                         ),
-                        validator: _validateName,
+                        validator: validateName,
                         onSaved: (value) {
                           widget.pairData.name = value;
                         },
@@ -691,7 +681,7 @@ class _ClientInformationPageState extends State<ClientInformationPage> {
                         textCapitalization: TextCapitalization.words,
                         controller: addressTextField,
                         textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.multiline,
+                        keyboardType: TextInputType.number,
                         style: const TextStyle(),
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
@@ -700,7 +690,7 @@ class _ClientInformationPageState extends State<ClientInformationPage> {
                               bottom: 10.0, left: 10.0, right: 10.0),
                         ),
                         onSaved: (value) {
-                          widget.pairData.pin = value as int?;
+                          widget.pairData.pin = int.parse(value ?? "0");
                         },
                       ),
                     ),
@@ -732,7 +722,10 @@ class _ClientInformationPageState extends State<ClientInformationPage> {
                         onSaved: (value) {
                           widget.pairData.mobileNo = value;
                         },
-                        validator: _validatePhoneNumber,
+                        validator: (value) {
+                          return validatePhoneNumber(
+                              value, phoneNumberTextField);
+                        },
                         inputFormatters: <TextInputFormatter>[
                           FilteringTextInputFormatter.digitsOnly,
                           // Fit the validating format.
@@ -813,7 +806,7 @@ class _ClientInformationPageState extends State<ClientInformationPage> {
                           contentPadding: EdgeInsets.only(
                               bottom: 10.0, left: 10.0, right: 10.0),
                         ),
-                        validator: _validateName,
+                        validator: validateName,
                         onSaved: (value) {
                           widget.pairData.dName = value;
                         },
@@ -1133,7 +1126,7 @@ class _ClientInformationPageState extends State<ClientInformationPage> {
                         textCapitalization: TextCapitalization.words,
                         controller: donorAddressTextField,
                         textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.multiline,
+                        keyboardType: TextInputType.number,
                         style: const TextStyle(),
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
@@ -1142,7 +1135,7 @@ class _ClientInformationPageState extends State<ClientInformationPage> {
                               bottom: 10.0, left: 10.0, right: 10.0),
                         ),
                         onSaved: (value) {
-                          widget.pairData.dPin = value as int?;
+                          widget.pairData.dPin = int.parse(value ?? "0");
                         },
                       ),
                     ),
@@ -1174,7 +1167,10 @@ class _ClientInformationPageState extends State<ClientInformationPage> {
                         onSaved: (value) {
                           widget.pairData.dMobileNo = value;
                         },
-                        validator: _validatePhoneNumber,
+                        validator: (value) {
+                          return validatePhoneNumber(
+                              value, donorPhoneNumberTextField);
+                        },
                         inputFormatters: <TextInputFormatter>[
                           FilteringTextInputFormatter.digitsOnly,
                           // Fit the validating format.

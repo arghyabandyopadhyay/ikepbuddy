@@ -1,28 +1,19 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ikepbuddy/Pages/login_page.dart';
-import 'package:ikepbuddy/constants.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 
-import 'Models/token_model.dart';
-import 'Modules/database.dart';
 import 'Modules/auth.dart';
+import 'Modules/universal_module.dart';
 import 'Pages/error_display_page.dart';
 import 'Pages/notifications_page.dart';
 import 'Models/received_notification_model.dart';
 import 'Pages/routing_page.dart';
 import 'custom_colors.dart';
-import 'global_class.dart';
 
 /// Define a top-level named handler which background/terminated messages will
 /// call.
@@ -117,84 +108,6 @@ class _IkepBuddyState extends State<IkepBuddy> {
   final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>(debugLabel: "navigator");
   Stream<String>? _tokenStream;
-  void setToken(String? token) async {
-    bool foundDeviceHistory = false;
-    GlobalClass.user = FirebaseAuth.instance.currentUser;
-    if (Platform.isAndroid) {
-      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      GlobalClass.applicationToken = token;
-      if (GlobalClass.user != null) {
-        getUserDetails().then((value) => {
-              if (value!.tokens == null)
-                {
-                  addToken(
-                      value,
-                      TokenModel(
-                          token: token,
-                          deviceId: androidInfo.androidId,
-                          deviceModel: androidInfo.model))
-                }
-              else
-                {
-                  value.tokens!.forEach((element) {
-                    if (element.deviceId == androidInfo.androidId) {
-                      if (element.token != token) {
-                        element.token = token;
-                        updateToken(element);
-                      }
-                      foundDeviceHistory = true;
-                    }
-                  }),
-                  if (!foundDeviceHistory)
-                    addToken(
-                        value,
-                        TokenModel(
-                            token: token,
-                            deviceId: androidInfo.androidId,
-                            deviceModel: androidInfo.model))
-                },
-            });
-      }
-    } else if (Platform.isIOS) {
-      // request permissions if we're on android
-      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      GlobalClass.applicationToken = token;
-      if (GlobalClass.user != null) {
-        getUserDetails().then((value) => {
-              if (value!.tokens == null)
-                {
-                  addToken(
-                      value,
-                      TokenModel(
-                          token: token,
-                          deviceId: iosInfo.identifierForVendor,
-                          deviceModel: iosInfo.model))
-                }
-              else
-                {
-                  value.tokens!.forEach((element) {
-                    if (element.deviceId == iosInfo.identifierForVendor) {
-                      if (element.token != token) {
-                        element.token = token;
-                        updateToken(element);
-                      }
-                      foundDeviceHistory = true;
-                    }
-                  }),
-                  if (!foundDeviceHistory)
-                    addToken(
-                        value,
-                        TokenModel(
-                            token: token,
-                            deviceId: iosInfo.identifierForVendor,
-                            deviceModel: iosInfo.model))
-                },
-            });
-      }
-    }
-  }
 
   Future<void> requestPermissions() async {
     // NotificationSettings settings =
@@ -223,7 +136,7 @@ class _IkepBuddyState extends State<IkepBuddy> {
               onPressed: () async {
                 Navigator.of(context, rootNavigator: true).pop();
                 navigatorKey.currentState!.push(CupertinoPageRoute(
-                    builder: (context) => NotificationsPage()));
+                    builder: (context) => const NotificationsPage()));
               },
               child: const Text('Ok'),
             )
@@ -235,8 +148,8 @@ class _IkepBuddyState extends State<IkepBuddy> {
 
   void _configureSelectNotificationSubject() {
     selectNotificationSubject.stream.listen((String payload) async {
-      navigatorKey.currentState!
-          .push(CupertinoPageRoute(builder: (context) => NotificationsPage()));
+      navigatorKey.currentState!.push(
+          CupertinoPageRoute(builder: (context) => const NotificationsPage()));
     });
   }
 
@@ -247,8 +160,8 @@ class _IkepBuddyState extends State<IkepBuddy> {
         .getInitialMessage()
         .then((RemoteMessage? message) {
       if (message != null) {
-        navigatorKey.currentState?.push(
-            CupertinoPageRoute(builder: (context) => NotificationsPage()));
+        navigatorKey.currentState?.push(CupertinoPageRoute(
+            builder: (context) => const NotificationsPage()));
       }
     });
 
@@ -272,8 +185,8 @@ class _IkepBuddyState extends State<IkepBuddy> {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      navigatorKey.currentState
-          ?.push(CupertinoPageRoute(builder: (context) => NotificationsPage()));
+      navigatorKey.currentState?.push(
+          CupertinoPageRoute(builder: (context) => const NotificationsPage()));
     });
     FirebaseMessaging.instance.getToken().then(setToken);
     _tokenStream = FirebaseMessaging.instance.onTokenRefresh;
@@ -323,9 +236,9 @@ class _IkepBuddyState extends State<IkepBuddy> {
                     message: 'Please contact System Administrator',
                   );
                 } else if (snapshot.connectionState == ConnectionState.done) {
-                  return RoutingPage();
+                  return const RoutingPage();
                 }
-                return Container(height: 0, width: 0);
+                return const SizedBox(height: 0, width: 0);
               }),
         ));
   }

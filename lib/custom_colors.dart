@@ -43,7 +43,7 @@ class CustomColors {
 var lightThemeData = ThemeData(
     accentColor: CustomColors.primaryColor,
     primaryColor: CustomColors.primaryColor,
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       backgroundColor: Colors.white,
       elevation: 0,
       textTheme: TextTheme(
@@ -55,7 +55,7 @@ var lightThemeData = ThemeData(
       iconTheme: IconThemeData(color: CustomColors.primaryColor),
     ),
     brightness: Brightness.light,
-    textTheme: TextTheme(
+    textTheme: const TextTheme(
       headline6: TextStyle(
           color: CustomColors.primaryColor,
           fontSize: 20,
@@ -86,13 +86,13 @@ var lightThemeData = ThemeData(
     primaryColorLight: Colors.white,
     scaffoldBackgroundColor: Colors.white,
     dialogBackgroundColor: Colors.white,
-    floatingActionButtonTheme: FloatingActionButtonThemeData(
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: CustomColors.primaryColor,
         foregroundColor: Colors.white));
 var darkThemeData = ThemeData(
     accentColor: Colors.white,
     primaryColor: Colors.white,
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       elevation: 0,
       backgroundColor: CustomColors.primaryColor,
       textTheme: TextTheme(
@@ -107,6 +107,6 @@ var darkThemeData = ThemeData(
     primaryColorLight: Colors.white,
     scaffoldBackgroundColor: CustomColors.primaryColor,
     dialogBackgroundColor: CustomColors.primaryColor,
-    floatingActionButtonTheme: FloatingActionButtonThemeData(
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: Colors.white,
         foregroundColor: CustomColors.primaryColor));

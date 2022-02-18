@@ -19,8 +19,8 @@ class TokenModel {
   }
 
   Map<String, dynamic> toJson() => {
-        "DeviceId": this.deviceId,
-        "DeviceModel": this.deviceModel,
-        "Token": this.token,
+        "DeviceId": deviceId,
+        "DeviceModel": deviceModel,
+        "Token": token,
       };
 }
