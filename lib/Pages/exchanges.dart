@@ -1,5 +1,4 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sms/flutter_sms.dart';
@@ -98,17 +97,6 @@ class _ExchangesState extends State<Exchanges> {
           .toList();
       setState(() {});
     }
-  }
-
-  void newPairModel(PairModel pairModel) {
-    addPairInRegister(pairModel);
-    setState(() {
-      if (clients != null) {
-        clients!.add(pairModel);
-      } else {
-        clients = [pairModel];
-      }
-    });
   }
 
   @override
@@ -575,10 +563,7 @@ class _ExchangesState extends State<Exchanges> {
                 ])
           : LoaderWidget(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(CupertinoPageRoute(
-              builder: (context) => AddPatientPage(callback: newPairModel)));
-        },
+        onPressed: () {},
         child: const Icon(Icons.add),
       ),
     );
