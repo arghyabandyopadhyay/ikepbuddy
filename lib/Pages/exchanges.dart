@@ -19,14 +19,13 @@ import '../global_class.dart';
 import 'add_patient_page.dart';
 import 'client_information_page.dart';
 
-class Patients extends StatefulWidget {
-  const Patients({Key? key}) : super(key: key);
-
+class Exchanges extends StatefulWidget {
+  const Exchanges({Key? key}) : super(key: key);
   @override
-  _PatientsState createState() => _PatientsState();
+  _ExchangesState createState() => _ExchangesState();
 }
 
-class _PatientsState extends State<Patients> {
+class _ExchangesState extends State<Exchanges> {
   List<PairModel>? clients;
   int _counter = 0;
   GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey();
@@ -49,7 +48,7 @@ class _PatientsState extends State<Patients> {
   );
 
   void getPairs() {
-    getAllClients().then((clients) => {
+    getUniversalClientList().then((clients) => {
           if (mounted)
             setState(() {
               this.clients = clients;

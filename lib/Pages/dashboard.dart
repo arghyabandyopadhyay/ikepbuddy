@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ikepbuddy/Pages/exchanges.dart';
 import 'package:ikepbuddy/Pages/patients.dart';
+import 'package:ikepbuddy/constants.dart';
+
+import 'all_patients.dart';
 
 class DashboardPage extends StatelessWidget {
   @override
@@ -32,38 +36,44 @@ class DashboardPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    alignment: Alignment.center,
-                    width: screenWidth * 0.3,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(
-                        color: const Color(0xffcfdbfb),
-                        width: 2,
-                      ),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x0f000000),
-                          blurRadius: 16,
-                          offset: Offset(3, 3),
+                  GestureDetector(
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: screenWidth * 0.3,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            color: const Color(0xffcfdbfb),
+                            width: 2,
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x0f000000),
+                              blurRadius: 16,
+                              offset: Offset(3, 3),
+                            ),
+                          ],
+                          color: Colors.white,
                         ),
-                      ],
-                      color: Colors.white,
-                    ),
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 40, horizontal: 4),
-                    child: const SizedBox(
-                      child: Text(
-                        "Exchanges",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontFamily: "Roboto",
-                          fontWeight: FontWeight.w500,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 40, horizontal: 4),
+                        child: const SizedBox(
+                          child: Text(
+                            "Exchanges",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontFamily: "Roboto",
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
+                      onTap: () => Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                                builder: (_) => const Exchanges()),
+                          )),
                   Container(
                     alignment: Alignment.center,
                     width: screenWidth * 0.3,
@@ -96,38 +106,44 @@ class DashboardPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Container(
-                    alignment: Alignment.center,
-                    width: screenWidth * 0.3,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(
-                        color: const Color(0xffcfdbfb),
-                        width: 2,
-                      ),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x0f000000),
-                          blurRadius: 16,
-                          offset: Offset(3, 3),
+                  GestureDetector(
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: screenWidth * 0.3,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            color: const Color(0xffcfdbfb),
+                            width: 2,
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x0f000000),
+                              blurRadius: 16,
+                              offset: Offset(3, 3),
+                            ),
+                          ],
+                          color: Colors.white,
                         ),
-                      ],
-                      color: Colors.white,
-                    ),
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 40, horizontal: 4),
-                    child: const SizedBox(
-                      child: Text(
-                        "Updates",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontFamily: "Roboto",
-                          fontWeight: FontWeight.w500,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 40, horizontal: 4),
+                        child: const SizedBox(
+                          child: Text(
+                            "All Patients",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontFamily: "Roboto",
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
+                      onTap: () => Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                                builder: (_) => const AllPatients()),
+                          ))
                 ],
               ),
               const SizedBox(

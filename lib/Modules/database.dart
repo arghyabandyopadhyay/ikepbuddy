@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:ikepbuddy/Models/data_model.dart';
 
 import '../Models/token_model.dart';
 import '../Modules/universal_module.dart';
@@ -20,6 +21,7 @@ DatabaseReference addPairInRegister(PairModel pair) {
   var id = databaseReference.child('${GlobalClass.user!.uid}/patients/').push();
   pair.masterFilter = generateMasterFilter(pair);
   pair.uid = id.key;
+  pair.setId(id);
   id.set(pair.toJson());
   return id;
 }
@@ -81,6 +83,27 @@ Future<List<PairModel>> getAllClients() async {
       client.setId(
           databaseReference.child('${GlobalClass.user!.uid}/patients/' + key));
       clients.add(client);
+    });
+  }
+  clients = sortClientsModule("A-Z", clients);
+  return clients;
+}
+
+//gets the list all the active clients enrolled across all the hospitals
+Future<List<PairModel>> getUniversalClientList() async {
+  DatabaseEvent databaseEvent = await databaseReference.child('/').once();
+  DataSnapshot dataSnapshot = databaseEvent.snapshot;
+  List<PairModel> clients = [];
+  if (dataSnapshot.value != null) {
+    Map<String, dynamic> snapshotVal =
+        jsonDecode(jsonEncode(dataSnapshot.value));
+    snapshotVal.forEach((key, value) {
+      DataModel dataModel =
+          DataModel.fromJson(jsonDecode(jsonEncode(value)), key);
+      dataModel.setId(databaseReference.child('/key'));
+      if (dataModel.patients != null) {
+        clients.addAll(dataModel.patients!.toList());
+      }
     });
   }
   clients = sortClientsModule("A-Z", clients);

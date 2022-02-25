@@ -47,7 +47,7 @@ class _ClientListState extends State<ClientList> {
     _loadMore();
   }
 
-  List displayList = [];
+  List<PairModel> displayList = [];
   int currentLength = 0;
   final int increment = 100;
   Future _loadMore() async {
@@ -83,7 +83,7 @@ class _ClientListState extends State<ClientList> {
                 itemBuilder: (context, index) {
                   return Slidable(
                     child: ClientCardWidget(
-                      key: ObjectKey(displayList[index].id.key),
+                      key: ObjectKey(displayList[index].uid),
                       item: displayList[index],
                       index: index,
                       onTapList: (index) {

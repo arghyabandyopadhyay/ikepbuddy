@@ -86,7 +86,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
       // pairData.endDate = DateTime(pairData.startDate.year,pairData.startDate.month+months,pairData.startDate.day);
       // globalShowInSnackBar(scaffoldMessengerKey,pairData.toJson());
       widget.callback(pairData);
-      // Navigator.pop(context);
+      Navigator.pop(context);
       // }
       // catch(E){
       //   globalShowInSnackBar(scaffoldMessengerKey,E);
